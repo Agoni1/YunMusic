@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="TabPageIndicator_textcolor_default">#515151</color>
+    <color name="titleRed">#cf0210</color>
+    <color name="textSelect">#dc1724</color>
+    <color name="textDefault">#313131</color>
+    <color name="point_Red">#cf0210</color>
+    <color name="point_Grey">#c2c2c2</color>
+</resources>
