@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 
 import com.example.agoni.yunmusic.R;
 import com.example.agoni.yunmusic.fragment.DrawerContentFragment;
@@ -16,6 +17,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        Toolbar toolbar;
     }
 
     private void initView() {
