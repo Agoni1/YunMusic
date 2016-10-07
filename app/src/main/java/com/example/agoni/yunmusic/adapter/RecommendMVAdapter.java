@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.agoni.yunmusic.R;
-import com.example.agoni.yunmusic.bean.RecommendSonglistInfo;
+import com.example.agoni.yunmusic.bean.RecommendMV;
 import com.example.agoni.yunmusic.util.MD5;
 
 import java.util.List;
@@ -17,21 +17,21 @@ import java.util.List;
 /**
  * Created by Agoni on 2016/10/6.
  */
-public class RecommendSonglistAdapter extends BaseAdapter {
+public class RecommendMVAdapter extends BaseAdapter {
     private Context context;
-    private List<RecommendSonglistInfo> recommendSonglist;
-    public RecommendSonglistAdapter(Context context,List<RecommendSonglistInfo> recommendSonglist){
+    private List<RecommendMV> recommendMVList;
+    public RecommendMVAdapter(Context context, List<RecommendMV> recommendMVList){
         this.context=context;
-        this.recommendSonglist=recommendSonglist;
+        this.recommendMVList=recommendMVList;
     }
     @Override
     public int getCount() {
-        return recommendSonglist.size();
+        return recommendMVList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return recommendSonglist.get(position);
+        return recommendMVList.get(position);
     }
 
     @Override
@@ -44,10 +44,10 @@ public class RecommendSonglistAdapter extends BaseAdapter {
         ViewHolder viewHolder ;
         if (convertView==null){
             viewHolder=new ViewHolder();
-            convertView=View.inflate(context, R.layout.gridview_item_layout,null);
-            viewHolder.img= (ImageView) convertView.findViewById(R.id.gridview_item_img);
-            viewHolder.title= (TextView) convertView.findViewById(R.id.gridview_item_title);
-            viewHolder.author= (TextView) convertView.findViewById(R.id.gridview_item_author);
+            convertView=View.inflate(context, R.layout.mv_gridview_item_layout,null);
+            viewHolder.img= (ImageView) convertView.findViewById(R.id.mv_gridview_item_img);
+            viewHolder.title= (TextView) convertView.findViewById(R.id.mv_gridview_item_title);
+            viewHolder.author= (TextView) convertView.findViewById(R.id.mv_gridview_item_author);
             convertView.setTag(viewHolder);
         }else {
             viewHolder= (ViewHolder) convertView.getTag();
@@ -55,9 +55,9 @@ public class RecommendSonglistAdapter extends BaseAdapter {
 
         try {
             viewHolder.img.setImageBitmap(BitmapFactory.decodeFile(context.getExternalCacheDir().getAbsolutePath()+
-                 "/"+MD5.md5Encode(recommendSonglist.get(position).getPic())));
-            viewHolder.title.setText(recommendSonglist.get(position).getTitle());
-            viewHolder.author.setVisibility(View.GONE);
+                 "/"+MD5.md5Encode(recommendMVList.get(position).getPic())));
+            viewHolder.title.setText(recommendMVList.get(position).getTitle());
+            viewHolder.author.setText(recommendMVList.get(position).getAuthor());
         } catch (Exception e) {
             e.printStackTrace();
         }

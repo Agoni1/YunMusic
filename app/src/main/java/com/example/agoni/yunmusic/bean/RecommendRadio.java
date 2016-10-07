@@ -21,6 +21,7 @@ public class RecommendRadio {
     private String channelid;
     private String pic;
 
+
     public String getDesc() {
         return desc;
     }

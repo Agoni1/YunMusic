@@ -1,5 +1,7 @@
 package com.example.agoni.yunmusic.fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,11 +16,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.agoni.yunmusic.R;
+import com.example.agoni.yunmusic.adapter.RecommendMVAdapter;
+import com.example.agoni.yunmusic.adapter.RecommendRadioAdapter;
+import com.example.agoni.yunmusic.adapter.RecommendSonglistAdapter;
 import com.example.agoni.yunmusic.bean.FocusImage;
 import com.example.agoni.yunmusic.bean.RecommendMV;
 import com.example.agoni.yunmusic.bean.RecommendRadio;
@@ -46,8 +52,14 @@ public class RecommendFragment extends Fragment {
     private List<RecommendRadio> recommendRadioList = new ArrayList<>();
     private List<RecommendMV> recommendMVList = new ArrayList<>();
     private List<FocusImage> focusImageList = new ArrayList<>();
+
+    private RecommendSonglistAdapter recommendSonglistAdapter;
+    private RecommendRadioAdapter recommendRadioAdapter;
+    private RecommendMVAdapter recommendMVAdapter;
+
     private File imageCacheDir;
 
+    private View bottomView;
     private ViewPager viewpager;
     private long timelenth = 5000;//轮播的间隔时长
     private final int SCROLL_START = 0x12;
@@ -66,15 +78,16 @@ public class RecommendFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recommend_layout, null);
-        imageCacheDir=getContext().getExternalCacheDir();
-        if (imageCacheDir.mkdir()){
-            Log.i("tag","文件不存在");
-            Log.i("tag","创建文件夹");
-        }else {
-            Log.i("tag","文件存在--->"+imageCacheDir.getAbsolutePath());
-            Log.i("tag","内部缓存--->"+getContext().getCacheDir().getAbsolutePath());
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.recommend_layout, null);
+        bottomView = view.findViewById(R.id.bottom_tips);
+        imageCacheDir = getContext().getExternalCacheDir();
+        if (imageCacheDir.mkdir()) {
+            Log.i("tag", "文件不存在");
+            Log.i("tag", "创建文件夹");
+        } else {
+            Log.i("tag", "文件存在--->" + imageCacheDir.getAbsolutePath());
+            Log.i("tag", "内部缓存--->" + getContext().getCacheDir().getAbsolutePath());
         }
         //首先检查有没有网络
         String netState = NetUitl.getNetState(getContext());
@@ -109,6 +122,11 @@ public class RecommendFragment extends Fragment {
 
         //wifi网络
         if (netState.equals("WIFI")) {
+            final LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.music_gridview_content);
+            final View view_loading = inflater.inflate(R.layout.loading_layout, null);
+            linearLayout.addView(view_loading);
+
+
             //检查是否有缓存
             boolean isCache = checkCache();
             if (isCache) {
@@ -122,29 +140,53 @@ public class RecommendFragment extends Fragment {
                             "ting?from=android&version=5.8.1.0&channel=ppzs&operator=3&method=" +
                             "baidu.ting.plaza.index&cuid=89CF1E1A06826F9AB95A34DC0F6AAA14");
                     jiexi(result);
+                    initAdapter();
+                    //更新界面
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            View view1 = inflater.inflate(R.layout.grid_recommend_songlist, null);
+                            View view2 = inflater.inflate(R.layout.grid_recommend_mv, null);
+                            View view3 = inflater.inflate(R.layout.grid_recommend_radio, null);
 
+                            GridView recommend_songlist_gridview = (GridView) view1.findViewById(R.id.tv_recommend_songlist_gridview);
+                            recommend_songlist_gridview.setAdapter(recommendSonglistAdapter);
+
+                            GridView recommend_mv_gridview = (GridView) view2.findViewById(R.id.tv_recommend_mv_gridview);
+                            recommend_mv_gridview.setAdapter(recommendMVAdapter);
+
+                            GridView recommend_radio_gridview = (GridView) view3.findViewById(R.id.tv_recommend_radio_gridview);
+                            recommend_radio_gridview.setAdapter(recommendRadioAdapter);
+
+                            linearLayout.removeView(view_loading);
+                            linearLayout.addView(view1);
+                            linearLayout.addView(view2);
+                            linearLayout.addView(view3);
+
+                            bottomView.setVisibility(View.VISIBLE);
+
+                            reloadViewPager(view);
+                        }
+                    });
                 }
             }).start();
-
-
-            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.music_gridview_content);
-            View view1 = inflater.inflate(R.layout.grid_recommend_songlist, null);
-            View view2 = inflater.inflate(R.layout.grid_recommend_mv, null);
-            View view3 = inflater.inflate(R.layout.grid_recommend_radio, null);
-
-            linearLayout.addView(view2);
-            linearLayout.addView(view1);
-            linearLayout.addView(view3);
-
         }
 
 
-        initData();//初始化数据
-        initView(view);//初始化view
-        handler.sendEmptyMessageDelayed(SCROLL_START, timelenth);
+//        initData();//初始化数据
+//        initView(view);//初始化view
+//        handler.sendEmptyMessageDelayed(SCROLL_START, timelenth);
+
         return view;
 
     }
+
+    private void initAdapter() {
+        recommendSonglistAdapter = new RecommendSonglistAdapter(getContext(), recommendSonglist);
+        recommendRadioAdapter = new RecommendRadioAdapter(getContext(), recommendRadioList);
+        recommendMVAdapter = new RecommendMVAdapter(getContext(), recommendMVList);
+    }
+
 
     /**
      * 解析获取的json数据
@@ -184,28 +226,28 @@ public class RecommendFragment extends Fragment {
     }
 
     private void cacheMvimage(List<RecommendMV> recommendMVList) {
-        for (RecommendMV i:recommendMVList){
+        for (RecommendMV i : recommendMVList) {
             String url = i.getPic();
             new MyAsyncTask(url).execute();
         }
     }
 
     private void cacheRadioimage(List<RecommendRadio> recommendRadioList) {
-        for (RecommendRadio i:recommendRadioList){
+        for (RecommendRadio i : recommendRadioList) {
             String url = i.getPic();
             new MyAsyncTask(url).execute();
         }
     }
 
     private void cacheGedanimage(List<RecommendSonglistInfo> recommendSonglist) {
-        for (RecommendSonglistInfo i:recommendSonglist){
+        for (RecommendSonglistInfo i : recommendSonglist) {
             String url = i.getPic();
             new MyAsyncTask(url).execute();
         }
     }
 
     private void cacheFocusimage(List<FocusImage> focusImageList) {
-        for (FocusImage i:focusImageList){
+        for (FocusImage i : focusImageList) {
             String url = i.getRandpic();
             new MyAsyncTask(url).execute();
         }
@@ -213,8 +255,9 @@ public class RecommendFragment extends Fragment {
 
     class MyAsyncTask extends AsyncTask<String, Integer, Long> {
         String url;
-        MyAsyncTask(String url){
-            this.url=url;
+
+        MyAsyncTask(String url) {
+            this.url = url;
         }
 
         @Override
@@ -222,7 +265,7 @@ public class RecommendFragment extends Fragment {
             byte[] bytes = NetUitl.requestforBytebyOkhttp(url);
             try {
                 File file = new File(imageCacheDir, MD5.md5Encode(url));
-                FileOutputStream outputStream =new FileOutputStream(file,false);
+                FileOutputStream outputStream = new FileOutputStream(file, false);
                 outputStream.write(bytes);
                 outputStream.close();
             } catch (Exception e) {
@@ -231,9 +274,11 @@ public class RecommendFragment extends Fragment {
             return null;
         }
 
-        protected void onProgressUpdate(Integer... progress) {}
+        protected void onProgressUpdate(Integer... progress) {
+        }
 
-        protected void onPostExecute(Long result) {}
+        protected void onPostExecute(Long result) {
+        }
     }
 
     /**
@@ -262,10 +307,10 @@ public class RecommendFragment extends Fragment {
     }
 
 
-    private void initView(View view) {
+    private void reloadViewPager(View view) {
         //绘制指示器
         final LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.indicatorContainor);
-        for (int i = 0; i < imglist.size(); i++) {
+        for (int i = 0; i < focusImageList.size(); i++) {
             ImageView imageView = new ImageView(getContext());
             imageView.setImageResource(R.drawable.shape_point_grey);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -279,9 +324,12 @@ public class RecommendFragment extends Fragment {
 
         //初始化指示器的红点
         final ImageView indicatorPoint = (ImageView) view.findViewById(R.id.indicatorPoint);
+        indicatorPoint.setVisibility(View.VISIBLE);
 
         viewpager = (ViewPager) view.findViewById(R.id.ad_image_viewpager);
         viewpager.setAdapter(new MyPageradapter());
+        viewpager.setCurrentItem(100 * focusImageList.size());//初始时将当前的页面索引值设得比较大，防止往左滑到底
+        handler.sendEmptyMessageDelayed(SCROLL_START, timelenth);//发送轮播消息
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             //监听页面的移动，让指示器跟随移动
@@ -291,9 +339,9 @@ public class RecommendFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                position = position % imglist.size();
+                position = position % focusImageList.size();
                 if (position < 0) {
-                    position = imglist.size() + position;
+                    position = focusImageList.size() + position;
                 }
                 //计算两个圆点的间距
                 final int distance = linearLayout.getChildAt(1).getLeft() - linearLayout.getChildAt(0).getLeft();
@@ -348,27 +396,34 @@ public class RecommendFragment extends Fragment {
                 return false;
             }
         });
-        viewpager.setCurrentItem(100 * imglist.size());//初始时将当前的页面索引值设得比较大，防止往左滑到底
     }
 
 
     class MyPageradapter extends PagerAdapter {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            position = position % imglist.size();
+            position = position % focusImageList.size();
             if (position < 0) {
-                position = imglist.size() + position;
+                position = focusImageList.size() + position;
             }
-            ImageView view = imglist.get(position);
-            //如果View已经在之前添加到了一个父组件，则必须先remove，否则会抛出IllegalStateException。
-            ViewParent vp = view.getParent();
-            if (vp != null) {
-                ViewGroup parent = (ViewGroup) vp;
-                parent.removeView(view);
+            try {
+                Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalCacheDir().getAbsolutePath() +
+                        "/" + MD5.md5Encode(focusImageList.get(position).getRandpic()));
+                ImageView view = new ImageView(getContext());
+                view.setScaleType(ImageView.ScaleType.FIT_XY);
+                view.setImageBitmap(bitmap);
+                //如果View已经在之前添加到了一个父组件，则必须先remove，否则会抛出IllegalStateException。
+                ViewParent vp = view.getParent();
+                if (vp != null) {
+                    ViewGroup parent = (ViewGroup) vp;
+                    parent.removeView(view);
+                }
+                container.addView(view);
+                return view;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            container.addView(view);
-            //add listeners here if necessary
-            return view;
+            return null;
         }
 
         @Override
@@ -413,6 +468,5 @@ public class RecommendFragment extends Fragment {
         ImageView imageView6 = new ImageView(getContext());
         imageView6.setBackgroundResource(R.drawable.p6);
         imglist.add(imageView6);
-
     }
 }

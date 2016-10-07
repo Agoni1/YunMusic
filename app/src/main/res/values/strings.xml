@@ -7,4 +7,6 @@
     <string name="adjust_order">调整栏目顺序</string>
     <string name="recommend_songlist">推荐歌单</string>
     <string name="more">更多</string>
+    <string name="radio">主播电台</string>
+    <string name="recommend_mv">推荐MV</string>
 </resources>

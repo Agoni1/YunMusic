@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp">
 
     <TextView
         android:id="@+id/tv_recommend_songlist_title"
-        android:text="@string/recommend_songlist"
-        android:drawableLeft="@drawable/recommend_songlist"
-        android:layout_marginLeft="5dp"
-        android:textColor="@color/textDefault"
-        android:textSize="16sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:drawableLeft="@drawable/recommend_songlist"
+        android:text="@string/recommend_songlist"
+        android:textColor="@color/textDefault"
+        android:textSize="16sp" />
 
     <TextView
-        android:layout_alignParentRight="true"
-        android:textSize="12sp"
-        android:drawableRight="@drawable/kk"
-        android:layout_alignBottom="@id/tv_recommend_songlist_title"
         android:id="@+id/tv_recommend_songlist_more"
-        android:text="@string/more"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <GridView
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_recommend_songlist_title"
+        android:layout_alignParentRight="true"
+        android:drawableRight="@drawable/kk"
+        android:text="@string/more"
+        android:textSize="12sp" />
+
+    <!--   android:drawSelectorOnTop="true" 选中时有动态效果-->
+    <com.example.agoni.yunmusic.view.MyGridView
         android:id="@+id/tv_recommend_songlist_gridview"
-        android:numColumns="3"
-        android:layout_below="@id/tv_recommend_songlist_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></GridView>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_recommend_songlist_title"
+        android:layout_marginTop="5dp"
+        android:drawSelectorOnTop="true"
+        android:numColumns="3"></com.example.agoni.yunmusic.view.MyGridView>
 
 </RelativeLayout>
