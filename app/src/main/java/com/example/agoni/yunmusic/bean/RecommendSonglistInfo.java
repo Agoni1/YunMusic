@@ -1,9 +1,11 @@
 package com.example.agoni.yunmusic.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Agoni on 2016/10/6.
  */
-public class RecommendSonglistInfo {
+public class RecommendSonglistInfo implements Serializable {
     /*
      position	:	1
      tag	:	华语,流行,励志

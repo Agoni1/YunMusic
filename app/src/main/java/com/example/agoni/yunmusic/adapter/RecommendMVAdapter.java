@@ -1,7 +1,6 @@
 package com.example.agoni.yunmusic.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.agoni.yunmusic.R;
 import com.example.agoni.yunmusic.bean.RecommendMV;
-import com.example.agoni.yunmusic.util.MD5;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -52,15 +51,12 @@ public class RecommendMVAdapter extends BaseAdapter {
         }else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
-
-        try {
-            viewHolder.img.setImageBitmap(BitmapFactory.decodeFile(context.getExternalCacheDir().getAbsolutePath()+
-                 "/"+MD5.md5Encode(recommendMVList.get(position).getPic())));
-            viewHolder.title.setText(recommendMVList.get(position).getTitle());
-            viewHolder.author.setText(recommendMVList.get(position).getAuthor());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Picasso.with(context).load(recommendMVList.get(position).getPic())
+                .placeholder(R.drawable.a8c)
+                .error(R.drawable.a8c)
+                .into(viewHolder.img);
+        viewHolder.title.setText(recommendMVList.get(position).getTitle());
+        viewHolder.author.setText(recommendMVList.get(position).getAuthor());
         return convertView;
     }
     class ViewHolder{

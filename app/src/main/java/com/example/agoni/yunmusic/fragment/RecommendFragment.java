@@ -1,8 +1,9 @@
 package com.example.agoni.yunmusic.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,10 +17,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.agoni.yunmusic.R;
 import com.example.agoni.yunmusic.adapter.RecommendMVAdapter;
@@ -38,8 +41,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,9 @@ import java.util.List;
  * Created by Agoni on 2016/9/25.
  */
 public class RecommendFragment extends Fragment {
+    private String url = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&" +
+            "version=5.8.1.0&channel=ppzs&operator=3&method=baidu.ting.plaza.index&cuid=" +
+            "89CF1E1A06826F9AB95A34DC0F6AAA14";
     private List<ImageView> imglist;
     private List<RecommendSonglistInfo> recommendSonglist = new ArrayList<>();
     private List<RecommendRadio> recommendRadioList = new ArrayList<>();
@@ -56,8 +60,6 @@ public class RecommendFragment extends Fragment {
     private RecommendSonglistAdapter recommendSonglistAdapter;
     private RecommendRadioAdapter recommendRadioAdapter;
     private RecommendMVAdapter recommendMVAdapter;
-
-    private File imageCacheDir;
 
     private View bottomView;
     private ViewPager viewpager;
@@ -81,43 +83,34 @@ public class RecommendFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.recommend_layout, null);
         bottomView = view.findViewById(R.id.bottom_tips);
-        imageCacheDir = getContext().getExternalCacheDir();
-        if (imageCacheDir.mkdir()) {
-            Log.i("tag", "文件不存在");
-            Log.i("tag", "创建文件夹");
-        } else {
-            Log.i("tag", "文件存在--->" + imageCacheDir.getAbsolutePath());
-            Log.i("tag", "内部缓存--->" + getContext().getCacheDir().getAbsolutePath());
-        }
-        //首先检查有没有网络
+
+        //检查是否有缓存
+        final String cache = getCache();
+
+        //检查有没有网络
         String netState = NetUitl.getNetState(getContext());
+        Log.i("tag", "net--->" + netState);
 
         //没有网络
         if (netState.equals("NO_NET")) {
-            //检查是否有缓存
-            boolean isCache = checkCache();
-            if (isCache) {
+            final LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.music_gridview_content);
+            if (cache != null) {
+                View view_loading = inflater.inflate(R.layout.loading_layout, null);
+                linearLayout.addView(view_loading);
                 //读取缓存，读取排序，按顺序加载数据
+                LogUtil.i("tag", "有缓存");
+                jiexi(cache);
+                initAdapter();
+                initView(view, inflater, linearLayout, view_loading);
             } else {
-                //显示无网络界面
-                LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.music_gridview_content);
-                View nonet_layout = inflater.inflate(R.layout.nonet_layout, null);
-                linearLayout.addView(nonet_layout);
+                View view_nonet = inflater.inflate(R.layout.nonet_layout, null);
+                linearLayout.addView(view_nonet);
             }
         }
 
         //数据网络
         if (netState.equals("MOBILE_DATA")) {
-            //检查是否有缓存
-            boolean isCache = checkCache();
-            if (isCache) {
-                //读取缓存，读取排序，按顺序加载数据
-            } else {
-                //显示无网络界面
-                LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.music_gridview_content);
-                View nonet_layout = inflater.inflate(R.layout.nonet_layout, null);
-                linearLayout.addView(nonet_layout);
-            }
+
         }
 
         //wifi网络
@@ -126,59 +119,95 @@ public class RecommendFragment extends Fragment {
             final View view_loading = inflater.inflate(R.layout.loading_layout, null);
             linearLayout.addView(view_loading);
 
-
-            //检查是否有缓存
-            boolean isCache = checkCache();
-            if (isCache) {
-                //读取缓存，读取排序，按顺序加载数据
-            }
             //下载，缓存，加载
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String result = NetUitl.request("http://tingapi.ting.baidu.com/v1/restserver/" +
-                            "ting?from=android&version=5.8.1.0&channel=ppzs&operator=3&method=" +
-                            "baidu.ting.plaza.index&cuid=89CF1E1A06826F9AB95A34DC0F6AAA14");
+                    //获取服务端的json
+                    String result = NetUitl.request(url);
+                    //如果数据变化就缓存新数据
+                    if (!result.equals(cache)) {
+                        cacheJson(result);
+                    }
                     jiexi(result);
                     initAdapter();
                     //更新界面
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            View view1 = inflater.inflate(R.layout.grid_recommend_songlist, null);
-                            View view2 = inflater.inflate(R.layout.grid_recommend_mv, null);
-                            View view3 = inflater.inflate(R.layout.grid_recommend_radio, null);
-
-                            GridView recommend_songlist_gridview = (GridView) view1.findViewById(R.id.tv_recommend_songlist_gridview);
-                            recommend_songlist_gridview.setAdapter(recommendSonglistAdapter);
-
-                            GridView recommend_mv_gridview = (GridView) view2.findViewById(R.id.tv_recommend_mv_gridview);
-                            recommend_mv_gridview.setAdapter(recommendMVAdapter);
-
-                            GridView recommend_radio_gridview = (GridView) view3.findViewById(R.id.tv_recommend_radio_gridview);
-                            recommend_radio_gridview.setAdapter(recommendRadioAdapter);
-
-                            linearLayout.removeView(view_loading);
-                            linearLayout.addView(view1);
-                            linearLayout.addView(view2);
-                            linearLayout.addView(view3);
-
-                            bottomView.setVisibility(View.VISIBLE);
-
-                            reloadViewPager(view);
+                            initView(view, inflater, linearLayout, view_loading);
                         }
                     });
                 }
             }).start();
         }
-
-
-//        initData();//初始化数据
-//        initView(view);//初始化view
-//        handler.sendEmptyMessageDelayed(SCROLL_START, timelenth);
-
         return view;
 
+    }
+
+    private void initView(View view, final LayoutInflater inflater, LinearLayout linearLayout, View view_loading) {
+        View view1 = inflater.inflate(R.layout.grid_recommend_songlist, null);
+        View view2 = inflater.inflate(R.layout.grid_recommend_mv, null);
+        View view3 = inflater.inflate(R.layout.grid_recommend_radio, null);
+
+        GridView recommend_songlist_gridview = (GridView) view1.findViewById(R.id.tv_recommend_songlist_gridview);
+        GridView recommend_mv_gridview = (GridView) view2.findViewById(R.id.tv_recommend_mv_gridview);
+        GridView recommend_radio_gridview = (GridView) view3.findViewById(R.id.tv_recommend_radio_gridview);
+
+        recommend_songlist_gridview.setAdapter(recommendSonglistAdapter);
+        recommend_mv_gridview.setAdapter(recommendMVAdapter);
+        recommend_radio_gridview.setAdapter(recommendRadioAdapter);
+
+        recommend_songlist_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                RecommendSonglistInfo songlistInfo = recommendSonglist.get(position);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putSerializable("key",songlistInfo);
+//                    Intent intent = new Intent();
+//                    intent.putExtra("key",bundle);
+//                    intent.setClass(getContext(), SonglistDetailActivity.class);
+//                    startActivity(intent);
+            }
+        });
+
+        recommend_mv_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean allow = netIsAllow();
+            }
+        });
+
+        recommend_radio_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean allow = netIsAllow();
+            }
+        });
+
+        linearLayout.removeView(view_loading);
+        linearLayout.addView(view1);
+        linearLayout.addView(view2);
+        linearLayout.addView(view3);
+
+        bottomView.setVisibility(View.VISIBLE);
+
+        reloadViewPager(view);
+    }
+
+    private boolean netIsAllow() {
+        String netState = NetUitl.getNetState(getContext());
+        if (netState.equals("NO_NET")) {
+            Toast.makeText(getContext(), "网络没有连接，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (netState.equals("MOBILE_DATA")) {
+            Toast.makeText(getContext(), "当前是数据网络，为保护您的流量，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (netState.equals("WIFI")) {
+            return true;
+        }
+        Toast.makeText(getContext(), "当前网络不允许，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     private void initAdapter() {
@@ -210,75 +239,17 @@ public class RecommendFragment extends Fragment {
             getBeanFromJson(jsonArray_radio, RecommendRadio.class, recommendRadioList);
             getBeanFromJson(jsonArray_mv, RecommendMV.class, recommendMVList);
             getBeanFromJson(jsonArray_focus, FocusImage.class, focusImageList);
-            LogUtil.i("tag", recommendSonglist.get(2).getTitle());
-            LogUtil.i("tag", recommendRadioList.get(2).getTitle());
-            LogUtil.i("tag", recommendMVList.get(2).getTitle());
-            LogUtil.i("tag", focusImageList.get(2).getRandpic_desc());
-
-            cacheFocusimage(focusImageList);    //缓存focus图片
-            cacheGedanimage(recommendSonglist);      //缓存歌单图片
-            cacheRadioimage(recommendRadioList);      //缓存电台图片
-            cacheMvimage(recommendMVList);      //缓存MV图片
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void cacheMvimage(List<RecommendMV> recommendMVList) {
-        for (RecommendMV i : recommendMVList) {
-            String url = i.getPic();
-            new MyAsyncTask(url).execute();
-        }
-    }
-
-    private void cacheRadioimage(List<RecommendRadio> recommendRadioList) {
-        for (RecommendRadio i : recommendRadioList) {
-            String url = i.getPic();
-            new MyAsyncTask(url).execute();
-        }
-    }
-
-    private void cacheGedanimage(List<RecommendSonglistInfo> recommendSonglist) {
-        for (RecommendSonglistInfo i : recommendSonglist) {
-            String url = i.getPic();
-            new MyAsyncTask(url).execute();
-        }
-    }
-
-    private void cacheFocusimage(List<FocusImage> focusImageList) {
-        for (FocusImage i : focusImageList) {
-            String url = i.getRandpic();
-            new MyAsyncTask(url).execute();
-        }
-    }
-
-    class MyAsyncTask extends AsyncTask<String, Integer, Long> {
-        String url;
-
-        MyAsyncTask(String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected Long doInBackground(String... params) {
-            byte[] bytes = NetUitl.requestforBytebyOkhttp(url);
-            try {
-                File file = new File(imageCacheDir, MD5.md5Encode(url));
-                FileOutputStream outputStream = new FileOutputStream(file, false);
-                outputStream.write(bytes);
-                outputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Long result) {
-        }
+    private void cacheJson(String result) {
+        SharedPreferences sp = getContext().getSharedPreferences("cache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("json", result);
+        editor.apply();
     }
 
     /**
@@ -302,8 +273,13 @@ public class RecommendFragment extends Fragment {
     /**
      * 检查缓存状态
      */
-    private boolean checkCache() {
-        return false;
+    private String getCache() {
+        SharedPreferences sp = getContext().getSharedPreferences("cache", Context.MODE_PRIVATE);
+        String json = sp.getString("json", null);
+        if (json != null) {
+            return json;
+        }
+        return null;
     }
 
 

@@ -49,6 +49,7 @@ public class MainContentFragment extends Fragment {
      */
     private void initView(View view) {
         final ViewPager viewpager = (ViewPager) view.findViewById(R.id.viewPager);
+        viewpager.setOffscreenPageLimit(3);
         rb_discover = (RadioButton) view.findViewById(R.id.rb_discover);
         rb_music = (RadioButton) view.findViewById(R.id.rb_music);
         rb_friends = (RadioButton) view.findViewById(R.id.rb_friends);
