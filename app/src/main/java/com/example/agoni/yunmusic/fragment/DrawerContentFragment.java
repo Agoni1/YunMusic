@@ -19,4 +19,5 @@ public class DrawerContentFragment extends Fragment {
         View view = inflater.inflate(R.layout.drawercontent_layout, null);
         return view;
     }
+
 }

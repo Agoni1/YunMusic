@@ -24,4 +24,5 @@ public class LoadingFragment extends Fragment {
         animationDrawable.start();
         return view;
     }
+
 }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/song_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:ems="3"
+        android:gravity="center"
+        android:text="1"
+        android:textSize="16sp" />
+
+    <RelativeLayout
+        android:id="@+id/namecontainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/song_order">
+
+        <TextView
+            android:ellipsize="end"
+            android:id="@+id/song_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未知歌名"
+            android:singleLine="true"
+            android:maxEms="10"
+            android:textColor="@color/textDefault"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/mv_icon"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/song_name"
+            android:background="@drawable/little_mv"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="MV"
+            android:textColor="@color/ThemeRed"
+            android:textSize="8sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/image_sq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/namecontainer"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/song_order"
+        android:src="@drawable/sq"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/song_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/namecontainer"
+        android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxEms="15"
+        android:singleLine="true"
+        android:layout_toRightOf="@+id/image_sq"
+        android:text="未知作者—专辑"
+        android:textSize="10sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignBottom="@id/song_order"
+        android:layout_toRightOf="@id/song_order"
+        android:background="@color/line_grey" />
+
+    <ImageButton
+        android:id="@+id/item_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:padding="15dp"
+        android:src="@drawable/item_menu" />
+
+
+</RelativeLayout>

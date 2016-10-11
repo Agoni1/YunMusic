@@ -19,4 +19,5 @@ public class SonglistFragment extends Fragment {
         View view = inflater.inflate(R.layout.songlist_layout, null);
         return view;
     }
+
 }

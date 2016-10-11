@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -61,6 +63,7 @@ public class RecommendFragment extends Fragment {
     private RecommendRadioAdapter recommendRadioAdapter;
     private RecommendMVAdapter recommendMVAdapter;
 
+    private FragmentManager manager;
     private View bottomView;
     private ViewPager viewpager;
     private long timelenth = 5000;//轮播的间隔时长
@@ -83,6 +86,7 @@ public class RecommendFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.recommend_layout, null);
         bottomView = view.findViewById(R.id.bottom_tips);
+        manager = getActivity().getSupportFragmentManager();
 
         //检查是否有缓存
         final String cache = getCache();
@@ -145,6 +149,7 @@ public class RecommendFragment extends Fragment {
 
     }
 
+
     private void initView(View view, final LayoutInflater inflater, LinearLayout linearLayout, View view_loading) {
         View view1 = inflater.inflate(R.layout.grid_recommend_songlist, null);
         View view2 = inflater.inflate(R.layout.grid_recommend_mv, null);
@@ -162,12 +167,18 @@ public class RecommendFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RecommendSonglistInfo songlistInfo = recommendSonglist.get(position);
-//                    Bundle bundle=new Bundle();
-//                    bundle.putSerializable("key",songlistInfo);
-//                    Intent intent = new Intent();
-//                    intent.putExtra("key",bundle);
-//                    intent.setClass(getContext(), SonglistDetailActivity.class);
-//                    startActivity(intent);
+
+                List<Fragment> fragments = manager.getFragments();
+                String tag = fragments.get(0).getTag();
+                Log.i("tag", tag);
+
+                FragmentTransaction transaction = manager.beginTransaction();
+                RecommendSonlistDetailFragment recommendSonlistDetailFragment = new RecommendSonlistDetailFragment();
+                recommendSonlistDetailFragment.setSonglistInfo(recommendSonglist.get(position));
+                transaction.add(R.id.mainContentFramLayout,recommendSonlistDetailFragment,"recommendSonlistDetailFragment");
+                transaction.hide(fragments.get(0));
+                transaction.show(recommendSonlistDetailFragment);
+                transaction.commit();
             }
         });
 

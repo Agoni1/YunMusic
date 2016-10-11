@@ -19,4 +19,5 @@ public class RadioFragment extends Fragment {
         View view = inflater.inflate(R.layout.radio_layout, null);
         return view;
     }
+
 }
