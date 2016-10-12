@@ -5,6 +5,8 @@
     android:layout_height="match_parent">
 
     <com.example.agoni.yunmusic.view.MyScrollView
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:id="@+id/songlist_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,6 +31,7 @@
 
                     <!--歌单图片-->
                     <RelativeLayout
+                        android:layout_marginTop="10dp"
                         android:id="@+id/list_image_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -36,8 +39,8 @@
 
                         <ImageView
                             android:id="@+id/list_image"
-                            android:layout_width="130dp"
-                            android:layout_height="130dp"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
                             android:background="@drawable/a8c" />
 
                         <ImageView
@@ -73,6 +76,7 @@
 
                     <!--歌单标题-->
                     <TextView
+                        android:gravity="center"
                         android:id="@+id/songlist_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -88,6 +92,7 @@
 
                     <!--歌单描述-->
                     <TextView
+                        android:gravity="center"
                         android:id="@+id/songlist_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -164,6 +169,7 @@
 
             <com.example.agoni.yunmusic.view.MyListView
                 android:id="@+id/songlist_listview"
+                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/songlist_option"

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.agoni.yunmusic.R;
-import com.example.agoni.yunmusic.bean.Song;
+import com.example.agoni.yunmusic.bean.Songinfo;
 
 import java.util.List;
 
@@ -17,28 +17,29 @@ import java.util.List;
  * Created by Agoni on 2016/10/10.
  */
 public class SonglistAdapter extends BaseAdapter {
-    private List<Song> songList;
+    private List<Songinfo> songinfoList;
     private Context context;
 
-    public SonglistAdapter(Context context, List<Song> songList) {
-        this.songList = songList;
+    public SonglistAdapter(Context context, List<Songinfo> songinfoList) {
+        this.songinfoList = songinfoList;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return songList.size();
+        return songinfoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return songList.get(position);
+        return songinfoList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -51,23 +52,31 @@ public class SonglistAdapter extends BaseAdapter {
             holder.author = (TextView) convertView.findViewById(R.id.song_author);
             holder.sq_icon = (ImageView) convertView.findViewById(R.id.image_sq);
             holder.mv_icon = (TextView) convertView.findViewById(R.id.mv_icon);
+            holder.item_menu= (ImageButton) convertView.findViewById(R.id.item_menu);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.song_order.setText((position + 1) + "");
-        holder.song_name.setText(songList.get(position).getTitle());
-        holder.author.setText(songList.get(position).getAuthor() + "-" +
-                songList.get(position).getAlbum_title());
+        holder.song_name.setText(songinfoList.get(position).getTitle());
+        holder.author.setText(songinfoList.get(position).getAuthor() + "-" +
+                songinfoList.get(position).getAlbum_title());
 
         //如果有MV，显示MV icon
-        if (songList.get(position).getHas_mv().equals("1")){
+        if (songinfoList.get(position).getHas_mv().equals("1")){
             holder.mv_icon.setVisibility(View.VISIBLE);
         }
         //如果有超品质格式，显示SQ图标
-        if (songList.get(position).getAll_rate().contains("flac")){
+        if (songinfoList.get(position).getAll_rate().contains("flac")){
             holder.sq_icon.setVisibility(View.VISIBLE);
         }
+        holder.item_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return convertView;
     }
 
@@ -79,4 +88,6 @@ public class SonglistAdapter extends BaseAdapter {
         TextView author;
         ImageButton item_menu;
     }
+
+
 }

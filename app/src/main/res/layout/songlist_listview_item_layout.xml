@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/song_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
+        android:clickable="false"
         android:ems="3"
+        android:focusable="false"
         android:gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
         android:text="1"
         android:textSize="16sp" />
 
@@ -19,28 +22,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/song_order">
+        android:layout_toRightOf="@id/song_order"
+        android:clickable="false"
+        android:focusable="false">
 
         <TextView
-            android:ellipsize="end"
             android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="未知歌名"
-            android:singleLine="true"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:focusable="false"
             android:maxEms="10"
+            android:singleLine="true"
+            android:text="未知歌名"
             android:textColor="@color/textDefault"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/mv_icon"
-            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/song_name"
             android:background="@drawable/little_mv"
             android:clickable="true"
+            android:focusable="false"
             android:gravity="center"
             android:text="MV"
             android:textColor="@color/ThemeRed"
@@ -55,6 +63,8 @@
         android:layout_below="@id/namecontainer"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/song_order"
+        android:clickable="false"
+        android:focusable="false"
         android:src="@drawable/sq"
         android:visibility="gone" />
 
@@ -64,10 +74,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/namecontainer"
         android:layout_marginTop="3dp"
+        android:layout_toRightOf="@+id/image_sq"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
         android:maxEms="15"
         android:singleLine="true"
-        android:layout_toRightOf="@+id/image_sq"
         android:text="未知作者—专辑"
         android:textSize="10sp" />
 
@@ -76,14 +88,18 @@
         android:layout_height="1px"
         android:layout_alignBottom="@id/song_order"
         android:layout_toRightOf="@id/song_order"
-        android:background="@color/line_grey" />
+        android:background="@color/line_grey"
+        android:clickable="false"
+        android:focusable="false" />
 
     <ImageButton
         android:id="@+id/item_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@null"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="false"
+        android:focusable="false"
         android:padding="15dp"
         android:src="@drawable/item_menu" />
 

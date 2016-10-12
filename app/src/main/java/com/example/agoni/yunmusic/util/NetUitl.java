@@ -23,20 +23,22 @@ public class NetUitl {
     public static String getNetState(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = manager.getActiveNetworkInfo();
-        if (activeNetworkInfo==null){
+        if (activeNetworkInfo == null) {
             return "NO_NET";
         }
         boolean connected = activeNetworkInfo.isConnected();
-        if (connected){
+        if (connected) {
             int type = activeNetworkInfo.getType();
-            String netType=null;
-            switch (type){
-                case ConnectivityManager.TYPE_WIFI:{
-                    netType="WIFI";
-                }break;
-                case ConnectivityManager.TYPE_MOBILE:{
-                    netType="MOBILE_DATA";
-                }break;
+            String netType = null;
+            switch (type) {
+                case ConnectivityManager.TYPE_WIFI: {
+                    netType = "WIFI";
+                }
+                break;
+                case ConnectivityManager.TYPE_MOBILE: {
+                    netType = "MOBILE_DATA";
+                }
+                break;
             }
             return netType;
         }
@@ -45,19 +47,20 @@ public class NetUitl {
 
     /**
      * 获取json
+     *
      * @param requestUrl
      * @return
      */
-    public static String request(String requestUrl){
+    public static String request(String requestUrl) {
         try {
-            URL url=new URL(requestUrl);
+            URL url = new URL(requestUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             InputStream inputStream = connection.getInputStream();
-            BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
-            StringBuffer sb=new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuffer sb = new StringBuffer();
             String line;
-            while ((line=reader.readLine())!=null){
+            while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
             return sb.toString().trim();
@@ -69,26 +72,28 @@ public class NetUitl {
 
     /**
      * 通过okhttp获取json
+     *
      * @param url
      * @return
      */
-    public static String requestbyOkhttp(String url){
+    public static String requestbyOkhttp(String url) {
         String result = null;
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
-            Request request=new Request.Builder().url(url).build();
+            Request request = new Request.Builder().url(url).build();
             Call call = okHttpClient.newCall(request);
             Response response = call.execute();
-            result=response.body().string();
+            result = response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
     }
-    public static byte[] requestforBytebyOkhttp(String url){
+
+    public static byte[] requestforBytebyOkhttp(String url) {
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
-            Request request=new Request.Builder().url(url).build();
+            Request request = new Request.Builder().url(url).build();
             Call call = okHttpClient.newCall(request);
             Response response = call.execute();
             byte[] bytes = response.body().bytes();
@@ -98,4 +103,48 @@ public class NetUitl {
         }
         return null;
     }
+
+    public static boolean IsWifi(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = manager.getActiveNetworkInfo();
+        if (activeNetworkInfo == null) {
+            return false;
+        }
+        boolean connected = activeNetworkInfo.isConnected();
+        if (connected) {
+            int type = activeNetworkInfo.getType();
+            String netType = null;
+            switch (type) {
+                case ConnectivityManager.TYPE_WIFI: {
+                    return true;
+                }
+                case ConnectivityManager.TYPE_MOBILE: {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    public static boolean IsMOBILEDATA(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = manager.getActiveNetworkInfo();
+        if (activeNetworkInfo == null) {
+            return false;
+        }
+        boolean connected = activeNetworkInfo.isConnected();
+        if (connected) {
+            int type = activeNetworkInfo.getType();
+            String netType = null;
+            switch (type) {
+                case ConnectivityManager.TYPE_WIFI: {
+                    return false;
+                }
+                case ConnectivityManager.TYPE_MOBILE: {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

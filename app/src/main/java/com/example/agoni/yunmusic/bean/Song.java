@@ -1,289 +1,169 @@
 package com.example.agoni.yunmusic.bean;
 
 /**
- * Created by Agoni on 2016/10/10.
+ * Created by Agoni on 2016/10/12.
  */
 public class Song {
-    /*
-    title:
-    song_id:269087942
-    author:Acoustic Collabo
-    album_id:269087742
-    album_title:OSTPart.1
-    relate_status:0
-    is_charge:0
-    all_rate:64,128,256,320
-    high_rate:320
-    all_artist_id:19095875
-    copy_type:1
-    has_mv:0
-    toneid:0
-    resource_type:0
-    is_ksong:0
-    resource_type_ext:0
-    versions:
-    has_mv_mobile:0
-    ting_uid:87962417
-    is_first_publish:0
-    havehigh:2
-    charge:0
-    learn:0
-    song_source:web
-    piao_id:0
-    korean_bb_song:0
-    mv_provider:0000000000
-    share:http://music.baidu.com/song/269087942
-    */
-    private String title;
-    private String song_id;
-    private String author;
-    private String album_id;
-    private String album_title;
-    private String relate_status;
-    private String is_charge;
-    private String all_rate;
-    private String high_rate;
-    private String all_artist_id;
-    private String copy_type;
-    private String has_mv;
-    private String toneid;
-    private String resource_type;
-    private String is_ksong;
-    private String resource_type_ext;
-    private String versions;
-    private String has_mv_mobile;
-    private String ting_uid;
-    private String is_first_publish;
-    private String havehigh;
-    private String charge;
-    private String learn;
-    private String song_source;
-    private String piao_id;
-    private String korean_bb_song;
-    private String mv_provider;
-    private String share;
+    /**
+     show_link	:	http://zhangmenshiting.baidu.com/data2/music/dcf2092999093c0d0460470e770d4783/256405659/256405659.mp3?xcode=82fbc04e500e6c0c2bb21879f3eb947d
+     down_type	:	0
+     original	:	0
+     free	:	1
+     replay_gain	:	1.110001
+     song_file_id	:	256405659
+     file_size	:	1609437
+     file_extension	:	mp3
+     file_duration	:	201
+     can_see	:	1
+     can_load	:	true
+     preload	:	40
+     file_bitrate	:	64
+     file_link	:	http://yinyueshiting.baidu.com/data2/music/dcf2092999093c0d0460470e770d4783/256405659/256405659.mp3?xcode=82fbc04e500e6c0c2bb21879f3eb947d
+     is_udition_url	:	1
+     hash	:	777c2c4e13756d33ab985aa47bce2426542b5e48
+     */
+    private String show_link ;
+    private String down_type;
+    private String original;
+    private String free;
+    private String replay_gain;
+    private String song_file_id;
+    private String file_size;
+    private String file_extension;
+    private String file_duration;
+    private String can_see;
+    private String can_load;
+    private String preload;
+    private String file_bitrate;
+    private String file_link;
+    private String is_udition_url;
+    private String hash;
 
-    public String getTitle() {
-        return title;
+    public String getShow_link() {
+        return show_link;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setShow_link(String show_link) {
+        this.show_link = show_link;
     }
 
-    public String getSong_id() {
-        return song_id;
+    public String getDown_type() {
+        return down_type;
     }
 
-    public void setSong_id(String song_id) {
-        this.song_id = song_id;
+    public void setDown_type(String down_type) {
+        this.down_type = down_type;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getOriginal() {
+        return original;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setOriginal(String original) {
+        this.original = original;
     }
 
-    public String getAlbum_id() {
-        return album_id;
+    public String getFree() {
+        return free;
     }
 
-    public void setAlbum_id(String album_id) {
-        this.album_id = album_id;
+    public void setFree(String free) {
+        this.free = free;
     }
 
-    public String getAlbum_title() {
-        return album_title;
+    public String getReplay_gain() {
+        return replay_gain;
     }
 
-    public void setAlbum_title(String album_title) {
-        this.album_title = album_title;
+    public void setReplay_gain(String replay_gain) {
+        this.replay_gain = replay_gain;
     }
 
-    public String getRelate_status() {
-        return relate_status;
+    public String getSong_file_id() {
+        return song_file_id;
     }
 
-    public void setRelate_status(String relate_status) {
-        this.relate_status = relate_status;
+    public void setSong_file_id(String song_file_id) {
+        this.song_file_id = song_file_id;
     }
 
-    public String getIs_charge() {
-        return is_charge;
+    public String getFile_size() {
+        return file_size;
     }
 
-    public void setIs_charge(String is_charge) {
-        this.is_charge = is_charge;
+    public void setFile_size(String file_size) {
+        this.file_size = file_size;
     }
 
-    public String getAll_rate() {
-        return all_rate;
+    public String getFile_extension() {
+        return file_extension;
     }
 
-    public void setAll_rate(String all_rate) {
-        this.all_rate = all_rate;
+    public void setFile_extension(String file_extension) {
+        this.file_extension = file_extension;
     }
 
-    public String getHigh_rate() {
-        return high_rate;
+    public String getFile_duration() {
+        return file_duration;
     }
 
-    public void setHigh_rate(String high_rate) {
-        this.high_rate = high_rate;
+    public void setFile_duration(String file_duration) {
+        this.file_duration = file_duration;
     }
 
-    public String getAll_artist_id() {
-        return all_artist_id;
+    public String getCan_see() {
+        return can_see;
     }
 
-    public void setAll_artist_id(String all_artist_id) {
-        this.all_artist_id = all_artist_id;
+    public void setCan_see(String can_see) {
+        this.can_see = can_see;
     }
 
-    public String getCopy_type() {
-        return copy_type;
+    public String getCan_load() {
+        return can_load;
     }
 
-    public void setCopy_type(String copy_type) {
-        this.copy_type = copy_type;
+    public void setCan_load(String can_load) {
+        this.can_load = can_load;
     }
 
-    public String getHas_mv() {
-        return has_mv;
+    public String getPreload() {
+        return preload;
     }
 
-    public void setHas_mv(String has_mv) {
-        this.has_mv = has_mv;
+    public void setPreload(String preload) {
+        this.preload = preload;
     }
 
-    public String getToneid() {
-        return toneid;
+    public String getFile_bitrate() {
+        return file_bitrate;
     }
 
-    public void setToneid(String toneid) {
-        this.toneid = toneid;
+    public void setFile_bitrate(String file_bitrate) {
+        this.file_bitrate = file_bitrate;
     }
 
-    public String getResource_type() {
-        return resource_type;
+    public String getFile_link() {
+        return file_link;
     }
 
-    public void setResource_type(String resource_type) {
-        this.resource_type = resource_type;
+    public void setFile_link(String file_link) {
+        this.file_link = file_link;
     }
 
-    public String getIs_ksong() {
-        return is_ksong;
+    public String getIs_udition_url() {
+        return is_udition_url;
     }
 
-    public void setIs_ksong(String is_ksong) {
-        this.is_ksong = is_ksong;
+    public void setIs_udition_url(String is_udition_url) {
+        this.is_udition_url = is_udition_url;
     }
 
-    public String getResource_type_ext() {
-        return resource_type_ext;
+    public String getHash() {
+        return hash;
     }
 
-    public void setResource_type_ext(String resource_type_ext) {
-        this.resource_type_ext = resource_type_ext;
-    }
-
-    public String getVersions() {
-        return versions;
-    }
-
-    public void setVersions(String versions) {
-        this.versions = versions;
-    }
-
-    public String getHas_mv_mobile() {
-        return has_mv_mobile;
-    }
-
-    public void setHas_mv_mobile(String has_mv_mobile) {
-        this.has_mv_mobile = has_mv_mobile;
-    }
-
-    public String getTing_uid() {
-        return ting_uid;
-    }
-
-    public void setTing_uid(String ting_uid) {
-        this.ting_uid = ting_uid;
-    }
-
-    public String getIs_first_publish() {
-        return is_first_publish;
-    }
-
-    public void setIs_first_publish(String is_first_publish) {
-        this.is_first_publish = is_first_publish;
-    }
-
-    public String getHavehigh() {
-        return havehigh;
-    }
-
-    public void setHavehigh(String havehigh) {
-        this.havehigh = havehigh;
-    }
-
-    public String getCharge() {
-        return charge;
-    }
-
-    public void setCharge(String charge) {
-        this.charge = charge;
-    }
-
-    public String getLearn() {
-        return learn;
-    }
-
-    public void setLearn(String learn) {
-        this.learn = learn;
-    }
-
-    public String getSong_source() {
-        return song_source;
-    }
-
-    public void setSong_source(String song_source) {
-        this.song_source = song_source;
-    }
-
-    public String getPiao_id() {
-        return piao_id;
-    }
-
-    public void setPiao_id(String piao_id) {
-        this.piao_id = piao_id;
-    }
-
-    public String getKorean_bb_song() {
-        return korean_bb_song;
-    }
-
-    public void setKorean_bb_song(String korean_bb_song) {
-        this.korean_bb_song = korean_bb_song;
-    }
-
-    public String getMv_provider() {
-        return mv_provider;
-    }
-
-    public void setMv_provider(String mv_provider) {
-        this.mv_provider = mv_provider;
-    }
-
-    public String getShare() {
-        return share;
-    }
-
-    public void setShare(String share) {
-        this.share = share;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

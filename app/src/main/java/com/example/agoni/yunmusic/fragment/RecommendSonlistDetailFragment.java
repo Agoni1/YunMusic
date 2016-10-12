@@ -1,5 +1,7 @@
 package com.example.agoni.yunmusic.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,11 +16,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.agoni.yunmusic.R;
 import com.example.agoni.yunmusic.adapter.SonglistAdapter;
 import com.example.agoni.yunmusic.bean.RecommendSonglistInfo;
 import com.example.agoni.yunmusic.bean.Song;
+import com.example.agoni.yunmusic.bean.SongInfoDetail;
+import com.example.agoni.yunmusic.bean.Songinfo;
+import com.example.agoni.yunmusic.net.BMA;
+import com.example.agoni.yunmusic.util.MD5;
 import com.example.agoni.yunmusic.util.NetUitl;
 import com.example.agoni.yunmusic.util.StaticValue;
 import com.example.agoni.yunmusic.view.MyScrollView;
@@ -37,7 +44,7 @@ import java.util.List;
  */
 public class RecommendSonlistDetailFragment extends Fragment {
     private RecommendSonglistInfo recommendSonglistInfo;
-    private List<Song> songList;
+    private List<Songinfo> songinfolist;
     SonglistAdapter adapter;
 
     private MyScrollView scrollView;
@@ -48,11 +55,12 @@ public class RecommendSonlistDetailFragment extends Fragment {
     private TextView tv_songlist_listennum;
     private ImageButton imgbtn_songlistinfo;       //图像右下角角标
     private ListView listView;
-
-    private String gedanurl="http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version" +
+    private View listview_head;//播放全部选项
+    private TextView tv_songnumber;//歌曲数量
+    private String songinfolisturl = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version" +
             "=5.6.5.6&format=json&method=baidu.ting.diy.gedanInfo&listid=";
 
-    private String gedan_desc;
+    private String songinfolist_desc;
     private String title_default;//默认标题
 
     @Nullable
@@ -62,41 +70,68 @@ public class RecommendSonlistDetailFragment extends Fragment {
         findView(view);
         initView();
         initListener();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String json = NetUitl.requestbyOkhttp(gedanurl + recommendSonglistInfo.getListid());
-                jiexi(json);
 
-                getActivity().runOnUiThread(new Runnable() {
+        SharedPreferences sp = getContext().getSharedPreferences("cache", Context.MODE_PRIVATE);
+        try {
+            String key = MD5.md5Encode(recommendSonglistInfo.getListid());
+            String cachejson = sp.getString(key, null);
+            if (cachejson != null) {
+                //有缓存加载缓存
+                jiexi(cachejson);
+                reloadView();
+            } else {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        reloadView();
-                    }
-                });
+                        String json = NetUitl.requestbyOkhttp(songinfolisturl + recommendSonglistInfo.getListid());
+                        cache(json);
+                        jiexi(json);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                reloadView();
+                            }
+                        });
 
+                    }
+                }).start();
             }
-        }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return view;
     }
 
+    private void cache(String json) {
+        SharedPreferences sp = getContext().getSharedPreferences("cache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        try {
+            editor.putString(MD5.md5Encode(recommendSonglistInfo.getListid()), json);
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void reloadView() {
-        songlist_desc.setText(gedan_desc);//显示歌单描述
-        adapter=new SonglistAdapter(getContext(),songList);
+        songlist_desc.setText(songinfolist_desc);//显示歌单描述
+        tv_songnumber.setText("(" + songinfolist.size() + "首)");//设置listview的头部显示歌曲数量
+        listView.addHeaderView(listview_head);//添加头部
+        listView.addFooterView(View.inflate(getContext(), R.layout.songlist_bottom_space, null));//添加尾部
+        adapter = new SonglistAdapter(getContext(), songinfolist);
         listView.setAdapter(adapter);
-        listView.addFooterView(View.inflate(getContext(),R.layout.songlist_bottom_space,null));
     }
 
     private void jiexi(String json) {
         try {
-            JSONObject object=new JSONObject(json);
-            gedan_desc = object.getString("desc");
+            JSONObject object = new JSONObject(json);
+            songinfolist_desc = object.getString("desc");
             JSONArray content = object.getJSONArray("content");
-            Gson gson =new Gson();
-            songList=new ArrayList<>();
-            for (int i=0;i<content.length();i++){
-                Song song = gson.fromJson(content.getString(i), Song.class);
-                songList.add(song);
+            Gson gson = new Gson();
+            songinfolist = new ArrayList<>();
+            for (int i = 0; i < content.length(); i++) {
+                Songinfo songinfo = gson.fromJson(content.getString(i), Songinfo.class);
+                songinfolist.add(songinfo);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -191,6 +226,9 @@ public class RecommendSonlistDetailFragment extends Fragment {
     }
 
     private void findView(View view) {
+        listview_head = View.inflate(getContext(), R.layout.songlist_head_view, null);
+        tv_songnumber = (TextView) listview_head.findViewById(R.id.listview_head_songnumber);
+
         scrollView = (MyScrollView) view.findViewById(R.id.songlist_scrollview);
         imgbtn_back = (ImageButton) view.findViewById(R.id.img_back);
         imgbtn_search = (ImageButton) view.findViewById(R.id.songlist_search);
@@ -207,41 +245,100 @@ public class RecommendSonlistDetailFragment extends Fragment {
         songlist_img = (ImageView) view.findViewById(R.id.list_image);
         tv_songlist_listennum = (TextView) view.findViewById(R.id.list_listennum);
         imgbtn_songlistinfo = (ImageButton) view.findViewById(R.id.songlist_image_info);
-        listView= (ListView) view.findViewById(R.id.songlist_listview);
+        listView = (ListView) view.findViewById(R.id.songlist_listview);
         listView.setFocusable(false);//防止listview加载完数据自动对齐到顶部
         title_default = titlebar_title.getText().toString();//默认标题
         final View headview = view.findViewById(R.id.songlist_detail_headview);
 
-
+        //监听ScrollViewde的滚动
         scrollView.setScrollListener(new MyScrollView.ScrollListener() {
             @Override
             public void scrollOritention(int l, int t, int oldl, int oldt) {
-                Log.i("tag","\tl:"+l+"\tt:"+t+"\toldl:"+oldl+"\toldt:"+oldt);
                 //设置标题栏透明度
                 float alpha = t / 260.0f;
-                if (alpha>1.0f){
-                    alpha=1.0f;
+                if (alpha > 1.0f) {
+                    alpha = 1.0f;
                 }
                 headview.setAlpha(alpha);
                 //设置标题文字
-                if(t>260){
+                if (t > 260) {
                     boolean b = titlebar_title.getText().toString().equals(title_default);
-                    if (b){
+                    if (b) {
                         titlebar_title.setText(recommendSonglistInfo.getTitle());
                     }
-                }else {
+                } else {
                     titlebar_title.setText(title_default);
                 }
             }
         });
 
+        //监听ListView的点击事件
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                requestSonginfoJson(songinfolist.get(position-1));//-1是因为listview的head占了0号位置
             }
         });
 
+    }
+
+    private void requestSonginfoJson(Songinfo songinfo) {
+        boolean b = netIsAllow();
+        if (b){
+            requestjson(songinfo);
+        }
+    }
+
+    private void requestjson(Songinfo songinfo) {
+        final String songurl = BMA.Song.songInfo(songinfo.getSong_id());
+        Log.i("tag",songurl);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String songinfojson = NetUitl.requestbyOkhttp(songurl);
+                Log.i("tag","songinfojson是："+songinfojson);
+                jiexsonginfo(songinfojson);
+            }
+        }).start();
+    }
+
+    //解析歌曲json
+    private void jiexsonginfo(String songinfojson) {
+        Gson gson = new Gson();
+        try {
+            JSONObject object=new JSONObject(songinfojson);
+            String songinfo = object.getString("songinfo");
+            SongInfoDetail songInfoDetail = gson.fromJson(songinfo, SongInfoDetail.class);
+            JSONObject songurl = object.getJSONObject("songurl");
+            JSONArray songArray = songurl.getJSONArray("url");
+            Log.i("tag",songArray.length()+"");
+            for (int i=0;i<songArray.length();i++){
+                Song song = gson.fromJson(songArray.getString(i), Song.class);
+                songInfoDetail.setSongs(song);
+                Log.i("tag",song.getFile_link());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean netIsAllow() {
+        String netState = NetUitl.getNetState(getContext());
+        if (netState.equals("NO_NET")) {
+            Toast.makeText(getContext(), "网络没有连接，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (netState.equals("MOBILE_DATA")) {
+            Toast.makeText(getContext(), "当前是数据网络，为保护您的流量，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (netState.equals("WIFI")) {
+            return true;
+        }
+        Toast.makeText(getContext(), "当前网络不允许，请连接Wifi后重试~", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    private void jiexisonginfolist(String json) {
     }
 
     public void setSonglistInfo(RecommendSonglistInfo recommendSonglistInfo) {

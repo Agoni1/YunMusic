@@ -16,6 +16,7 @@
 
         <!--播放控制区-->
         <RelativeLayout
+            android:id="@+id/playbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -25,30 +26,30 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/music_image"
+                android:id="@+id/playbar_music_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/musicimage" />
 
             <TextView
-                android:id="@+id/music_title"
+                android:id="@+id/playbar_music_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/music_image"
+                android:layout_toRightOf="@id/playbar_music_image"
                 android:text="歌曲名"
                 android:textColor="#4b4646"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/music_author"
+                android:id="@+id/playbar_music_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/music_title"
+                android:layout_below="@id/playbar_music_title"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/music_image"
+                android:layout_toRightOf="@id/playbar_music_image"
                 android:text="作者"
                 android:textColor="#9c9b9b"
                 android:textSize="12sp" />
@@ -64,21 +65,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/playbar_btn_playlist" />
+                    android:src="@drawable/playbar_btn_playlist"
+                    android:background="?attr/selectableItemBackground" />
 
                 <ImageButton
                     android:id="@+id/playbar_btn_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/playbar_btn_play" />
+                    android:src="@drawable/playbar_btn_play"
+                    android:background="?attr/selectableItemBackground" />
 
                 <ImageButton
                     android:id="@+id/playbar_btn_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/playbar_btn_next" />
+                    android:src="@drawable/playbar_btn_next"
+                    android:background="?attr/selectableItemBackground" />
 
             </LinearLayout>
         </RelativeLayout>
