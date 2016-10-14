@@ -37,11 +37,11 @@ public class DiscoverFragment extends Fragment {
         fragmentList.add(1, new SonglistFragment());
         fragmentList.add(2, new RadioFragment());
         fragmentList.add(3, new RankingFragment());
-
     }
 
     private void initView(View view) {
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.discover_viewpager);
+        viewPager.setOffscreenPageLimit(4);
 
         //为viewpager设置适配器
         viewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {

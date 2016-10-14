@@ -9,4 +9,12 @@
     <color name="textDefault">#313131</color>
     <color name="point_Red">#cf0210</color>
     <color name="point_Grey">#c2c2c2</color>
+    <color name="textRed">#cf0210</color>
+    <color name="line_grey">#cacaca</color>
+    <color name="ThemeRed">#cf0210</color>
+    <color name="backgroundLittleRed">#f198b2</color>
+    <color name="songlist_detail_headview_bg">#918b8b</color>
+    <color name="white_text">#ffffff</color>
+    <color name="white_grey_text">#d9d9d9</color>
+
 </resources>

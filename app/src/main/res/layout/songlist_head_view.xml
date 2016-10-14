@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/listview_head_playall_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/listview_head_playall_icon" />
+
+    <TextView
+        android:id="@+id/playall_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/listview_head_playall_icon"
+        android:text="播放全部"
+        android:textColor="@color/textDefault"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/listview_head_songnumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/playall_text"
+        android:textSize="14sp" />
+
+    <ImageButton
+        android:id="@+id/listview_head_selectSome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="?attr/selectableItemBackground"
+        android:padding="15dp"
+        android:src="@drawable/listview_head_select" />
+    <View
+        android:layout_below="@id/listview_head_playall_icon"
+        android:background="@color/line_grey"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+</RelativeLayout>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.agoni.yunmusic.view.MyScrollView
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:id="@+id/songlist_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/songlist_detail_headview_bg">
+
+                <!--列表信息展示区-->
+                <RelativeLayout
+                    android:id="@+id/songlist_detail_listinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="55dp">
+
+                    <!--歌单图片-->
+                    <RelativeLayout
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/list_image_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp">
+
+                        <ImageView
+                            android:id="@+id/list_image"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:background="@drawable/a8c" />
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:layout_alignRight="@id/list_image"
+                            android:alpha="0.5"
+                            android:background="@drawable/listennum_bg" />
+
+                        <TextView
+                            android:id="@+id/list_listennum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignRight="@id/list_image"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="4dp"
+                            android:drawableLeft="@drawable/listennum"
+                            android:text="20万"
+                            android:textColor="@color/white_text"
+                            android:textSize="10sp" />
+
+                        <ImageButton
+                            android:id="@+id/songlist_image_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/list_image"
+                            android:layout_alignRight="@id/list_image"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="4dp"
+                            android:background="@null"
+                            android:src="@drawable/songlist_image_info" />
+                    </RelativeLayout>
+
+                    <!--歌单标题-->
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/songlist_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toRightOf="@id/list_image_container"
+                        android:ellipsize="end"
+                        android:lines="3"
+                        android:maxLines="3"
+                        android:textColor="@color/white_text"
+                        android:textSize="18sp" />
+
+                    <!--歌单描述-->
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/songlist_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/songlist_title"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_toRightOf="@id/list_image_container"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textColor="@color/white_grey_text" />
+
+                </RelativeLayout>
+
+                <!--收藏，分享-->
+                <LinearLayout
+                    android:id="@+id/songlist_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/songlist_detail_listinfo"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/collect_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:drawableTop="@drawable/collect_icon"
+                        android:gravity="center"
+                        android:text="收藏"
+                        android:textColor="@color/white_text"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/comments_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:drawableTop="@drawable/comments_icon"
+                        android:gravity="center"
+                        android:text="评论"
+                        android:textColor="@color/white_text"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/share_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:drawableTop="@drawable/share_icon"
+                        android:gravity="center"
+                        android:text="分享"
+                        android:textColor="@color/white_text"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/download_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:drawableTop="@drawable/download_icon"
+                        android:gravity="center"
+                        android:text="下载"
+                        android:textColor="@color/white_text"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <com.example.agoni.yunmusic.view.MyListView
+                android:id="@+id/songlist_listview"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/songlist_option"
+                android:divider="@null"></com.example.agoni.yunmusic.view.MyListView>
+
+        </LinearLayout>
+
+
+    </com.example.agoni.yunmusic.view.MyScrollView>
+
+    <!--标题栏-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+
+        <View
+            android:id="@+id/songlist_detail_headview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/songlist_detail_headview_bg" />
+
+        <ImageButton
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="15dp"
+            android:src="@drawable/back" />
+
+
+
+        <ImageButton
+            android:id="@+id/songlist_menu_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/menu_more" />
+
+        <ImageButton
+            android:id="@+id/songlist_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/songlist_menu_more"
+            android:background="@null"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/search" />
+        <com.example.agoni.yunmusic.view.MyMaqueeView
+            android:id="@+id/titlebar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/songlist_search"
+            android:layout_toRightOf="@id/img_back"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxEms="8"
+            android:scrollHorizontally="true"
+            android:text="歌单"
+            android:singleLine="true"
+            android:textColor="@color/white_text"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/songlist_catagory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titlebar_title"
+            android:layout_toRightOf="@id/img_back"
+            android:text="类别"
+            android:textColor="@color/white_grey_text"
+            android:textSize="10sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
