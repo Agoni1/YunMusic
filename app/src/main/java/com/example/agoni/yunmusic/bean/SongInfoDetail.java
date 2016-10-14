@@ -242,8 +242,9 @@ public class SongInfoDetail {
         this.artist_500_500 = artist_500_500;
     }
 
-    public String getBitrate() {
-        return bitrate;
+    public String[] getBitrate() {
+        String[] bitrates = bitrate.split(",");
+        return bitrates;
     }
 
     public void setBitrate(String bitrate) {

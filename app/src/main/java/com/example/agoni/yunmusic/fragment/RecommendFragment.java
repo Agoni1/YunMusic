@@ -2,8 +2,6 @@ package com.example.agoni.yunmusic.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,9 +33,9 @@ import com.example.agoni.yunmusic.bean.RecommendMV;
 import com.example.agoni.yunmusic.bean.RecommendRadio;
 import com.example.agoni.yunmusic.bean.RecommendSonglistInfo;
 import com.example.agoni.yunmusic.util.LogUtil;
-import com.example.agoni.yunmusic.util.MD5;
 import com.example.agoni.yunmusic.util.NetUitl;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -394,11 +392,18 @@ public class RecommendFragment extends Fragment {
                 position = focusImageList.size() + position;
             }
             try {
-                Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalCacheDir().getAbsolutePath() +
-                        "/" + MD5.md5Encode(focusImageList.get(position).getRandpic()));
+//                Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalCacheDir().getAbsolutePath() +
+//                        "/" + MD5.md5Encode(focusImageList.get(position).getRandpic()));
+//                ImageView view = new ImageView(getContext());
+//                view.setScaleType(ImageView.ScaleType.FIT_XY);
+//                view.setImageBitmap(bitmap);
                 ImageView view = new ImageView(getContext());
                 view.setScaleType(ImageView.ScaleType.FIT_XY);
-                view.setImageBitmap(bitmap);
+                Picasso.with(getContext()).load(focusImageList.get(position).getRandpic())
+                        .placeholder(R.drawable.a8c)
+                .error(R.drawable.a8c).into(view);
+
+
                 //如果View已经在之前添加到了一个父组件，则必须先remove，否则会抛出IllegalStateException。
                 ViewParent vp = view.getParent();
                 if (vp != null) {
