@@ -144,7 +144,6 @@ public class RecommendFragment extends Fragment {
             }).start();
         }
         return view;
-
     }
 
 
