@@ -13,21 +13,19 @@ import java.util.List;
  */
 public class Myapp extends Application {
     private String curSongid=null;//记录当前播放的song_id
-    private HashMap<String,SongInfoDetail> playList=new HashMap<String,SongInfoDetail>();
-    private List<SongInfoDetail> songList=new ArrayList<>();//播放列表
+    private List<SongInfoDetail> playList=new ArrayList<>();//播放列表
     private HashMap<String,Integer> indexOfList=new HashMap<String,Integer>();//每首歌在列表中的索引
 
-    public List<SongInfoDetail> getSongList() {
-        return songList;
+    public List<SongInfoDetail> getPlayList() {
+        return playList;
     }
-    public void setSongList(List<SongInfoDetail> songList) {
-        this.songList = songList;
-    }
-
-    public void addToSongList(SongInfoDetail songInfoDetail){
-        songList.add(songInfoDetail);
+    public void addToPlayList(SongInfoDetail songInfoDetail){
+        playList.add(songInfoDetail);
     }
 
+    public void setPlayList(List<SongInfoDetail> playList) {
+        this.playList = playList;
+    }
 
     public HashMap<String, Integer> getIndexOfList() {
         return indexOfList;
@@ -39,18 +37,6 @@ public class Myapp extends Application {
 
     public int getIndex(String songid){
         return indexOfList.get(songid);
-    }
-
-    public HashMap<String, SongInfoDetail> getPlayList() {
-        return playList;
-    }
-
-    public void addToPlayList(SongInfoDetail songInfoDetail){
-        playList.put(songInfoDetail.getSong_id(),songInfoDetail);
-    }
-
-    public void setPlayList(HashMap<String, SongInfoDetail> playList) {
-        this.playList = playList;
     }
 
     public String getCurSongid() {

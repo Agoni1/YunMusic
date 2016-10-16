@@ -38,9 +38,9 @@ public class MusicService extends Service {
             if (curSongid != null) {
                 int index = myapp.getIndex(curSongid);
                 Log.i("tag", "curSongid=" + curSongid);
-                Log.i("tag", myapp.getSongList().size() + "");
+                Log.i("tag", myapp.getPlayList().size() + "");
                 Log.i("tag", index + "");
-                SongInfoDetail songInfoDetail = myapp.getSongList().get(index);
+                SongInfoDetail songInfoDetail = myapp.getPlayList().get(index);
                 initSong(songInfoDetail);
             } else {
                 MainActivity.handler.post(new Runnable() {
@@ -141,12 +141,12 @@ public class MusicService extends Service {
 
     private void playNext() {
         int curindex = myapp.getIndex(myapp.getCurSongid());
-        if (curindex == myapp.getSongList().size() - 1) {
+        if (curindex == myapp.getPlayList().size() - 1) {
             curindex = 0;
         } else {
             curindex = curindex + 1;
         }
-        SongInfoDetail songInfoDetail = myapp.getSongList().get(curindex);
+        SongInfoDetail songInfoDetail = myapp.getPlayList().get(curindex);
         initSong(songInfoDetail);
     }
 

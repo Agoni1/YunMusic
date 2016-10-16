@@ -321,8 +321,8 @@ public class RecommendSonlistDetailFragment extends Fragment {
             Myapp myapp = (Myapp) (getActivity().getApplication());
             boolean hadAdd = hadAddtoPlayList(songInfoDetail);
             if (!hadAdd) {
-                int size = myapp.getSongList().size();
-                myapp.addToSongList(songInfoDetail);//添加到列表中
+                int size = myapp.getPlayList().size();
+                myapp.addToPlayList(songInfoDetail);//添加到列表中
                 myapp.addIndex(songInfoDetail.getSong_id(),size);
             }
             myapp.setCurSongid(songInfoDetail.getSong_id());//设置当前songid

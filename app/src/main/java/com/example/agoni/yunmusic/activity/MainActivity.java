@@ -132,7 +132,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 Myapp myapp = (Myapp) getApplication();
                 if (myapp.getCurSongid() != null){
-                    if (myapp.getSongList().size()<=1){
+                    if (myapp.getPlayList().size()<=1){
                         Toast.makeText(getApplicationContext(), "没有更多歌曲", Toast.LENGTH_SHORT).show();
                     }else{
                         try {
@@ -198,7 +198,12 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        unbindService(conn);
+        unbindService(conn);//解绑服务
+        savePlayList();
+    }
+
+    private void savePlayList() {
+
     }
 
     @Override
