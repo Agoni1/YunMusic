@@ -18,7 +18,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.agoni.yunmusic.Myapp;
 import com.example.agoni.yunmusic.R;
+import com.example.agoni.yunmusic.activity.MainActivity;
 import com.example.agoni.yunmusic.adapter.SonglistAdapter;
 import com.example.agoni.yunmusic.bean.RecommendSonglistInfo;
 import com.example.agoni.yunmusic.bean.Song;
@@ -276,7 +278,7 @@ public class RecommendSonlistDetailFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                requestSonginfoJson(songinfolist.get(position-1));//-1是因为listview的head占了0号位置
+                requestSonginfoJson(songinfolist.get(position - 1));//-1是因为listview的head占了0号位置
             }
         });
 
@@ -284,19 +286,19 @@ public class RecommendSonlistDetailFragment extends Fragment {
 
     private void requestSonginfoJson(Songinfo songinfo) {
         boolean b = netIsAllow();
-        if (b){
+        if (b) {
             requestjson(songinfo);
         }
     }
 
     private void requestjson(Songinfo songinfo) {
         final String songurl = BMA.Song.songInfo(songinfo.getSong_id());
-        Log.i("tag",songurl);
+        Log.i("tag", songurl);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String songinfojson = NetUitl.requestbyOkhttp(songurl);
-                Log.i("tag","songinfojson是："+songinfojson);
+                Log.i("tag", "songinfojson是：" + songinfojson);
                 jiexsonginfo(songinfojson);
             }
         }).start();
@@ -306,21 +308,44 @@ public class RecommendSonlistDetailFragment extends Fragment {
     private void jiexsonginfo(String songinfojson) {
         Gson gson = new Gson();
         try {
-            JSONObject object=new JSONObject(songinfojson);
+            JSONObject object = new JSONObject(songinfojson);
             String songinfo = object.getString("songinfo");
             SongInfoDetail songInfoDetail = gson.fromJson(songinfo, SongInfoDetail.class);
             JSONObject songurl = object.getJSONObject("songurl");
             JSONArray songArray = songurl.getJSONArray("url");
-            Log.i("tag",songArray.length()+"");
-            for (int i=0;i<songArray.length();i++){
+            for (int i = 0; i < songArray.length(); i++) {
                 Song song = gson.fromJson(songArray.getString(i), Song.class);
                 songInfoDetail.setSongs(song);
-                Log.i("tag",song.getFile_link());
             }
+            //将当前歌曲添加到播放列表中，并设置当前songid
+            Myapp myapp = (Myapp) (getActivity().getApplication());
+            boolean hadAdd = hadAddtoPlayList(songInfoDetail);
+            if (!hadAdd) {
+                int size = myapp.getSongList().size();
+                myapp.addToSongList(songInfoDetail);//添加到列表中
+                myapp.addIndex(songInfoDetail.getSong_id(),size);
+            }
+            myapp.setCurSongid(songInfoDetail.getSong_id());//设置当前songid
+            playsong();
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void playsong() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.playsong();
+    }
+
+    private boolean hadAddtoPlayList(SongInfoDetail songInfoDetail) {
+        Myapp myapp = (Myapp) (getActivity().getApplication());
+        if (myapp.getIndexOfList().get(songInfoDetail.getSong_id()) == null) {
+            return false;
+        }
+        return true;
     }
 
     private boolean netIsAllow() {

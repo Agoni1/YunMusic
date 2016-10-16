@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by Agoni on 2016/9/25.
  */
@@ -434,31 +435,4 @@ public class RecommendFragment extends Fragment {
         }
     }
 
-    private void initData() {
-        imglist = new ArrayList<>();
-
-        ImageView imageView1 = new ImageView(getContext());
-        imageView1.setBackgroundResource(R.drawable.p1);
-        imglist.add(imageView1);
-
-        ImageView imageView2 = new ImageView(getContext());
-        imageView2.setBackgroundResource(R.drawable.p2);
-        imglist.add(imageView2);
-
-        ImageView imageView3 = new ImageView(getContext());
-        imageView3.setBackgroundResource(R.drawable.p3);
-        imglist.add(imageView3);
-
-        ImageView imageView4 = new ImageView(getContext());
-        imageView4.setBackgroundResource(R.drawable.p4);
-        imglist.add(imageView4);
-
-        ImageView imageView5 = new ImageView(getContext());
-        imageView5.setBackgroundResource(R.drawable.p5);
-        imglist.add(imageView5);
-
-        ImageView imageView6 = new ImageView(getContext());
-        imageView6.setBackgroundResource(R.drawable.p6);
-        imglist.add(imageView6);
-    }
 }
