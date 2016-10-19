@@ -1,5 +1,6 @@
 package com.example.agoni.yunmusic.activity;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,10 +16,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +32,12 @@ import com.example.agoni.yunmusic.AidlIterface;
 import com.example.agoni.yunmusic.MusicService;
 import com.example.agoni.yunmusic.Myapp;
 import com.example.agoni.yunmusic.R;
+import com.example.agoni.yunmusic.adapter.PlayListAdapter;
 import com.example.agoni.yunmusic.bean.SongInfoDetail;
 import com.example.agoni.yunmusic.fragment.DrawerContentFragment;
 import com.example.agoni.yunmusic.fragment.MainContentFragment;
+import com.example.agoni.yunmusic.util.DensityUtil;
+import com.example.agoni.yunmusic.util.ScreenUtils;
 import com.example.agoni.yunmusic.util.StaticValue;
 import com.squareup.picasso.Picasso;
 
@@ -215,6 +224,41 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
+        playbar_btn_playlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Myapp myapp= (Myapp) getApplication();
+                List<SongInfoDetail> playList = myapp.getPlayList();
+                if (playList!=null){
+                    showPlayList(playList);
+                }else {
+                    Toast.makeText(getApplicationContext(),"播放列表为空",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void showPlayList(List<SongInfoDetail> playList) {
+        View view = LayoutInflater.from(this).inflate(R.layout.playlist, null);
+        ListView listView= (ListView) view.findViewById(R.id.playlist_listview);
+        listView.setAdapter(new PlayListAdapter(getApplicationContext(),playList));
+        Dialog dialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+        //填充对话框的布局
+        //将布局设置给Dialog
+        dialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = dialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity( Gravity.BOTTOM);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.width= ScreenUtils.getScreenWidth(getApplicationContext());
+        lp.height = DensityUtil.dip2px(getApplicationContext(), 390);
+
+//       将属性设置给窗体
+        dialogWindow.setAttributes(lp);
+        dialog.show();//显示对话框
 
     }
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/playlist_item_songname"
+        android:text="未知标题"
+        android:textColor="@color/textDefault"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/playlist_item_author"
+        android:text="未知歌手"
+        android:textSize="10sp"
+        android:layout_alignBaseline="@id/playlist_item_songname"
+        android:layout_toRightOf="@id/playlist_item_songname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageButton
+        android:id="@+id/playlist_item_delete"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/delete"
+        android:background="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/playlist_item_songname"
+        android:background="@color/line_grey"
+        android:layout_width="match_parent"
+        android:layout_height="1px" />
+
+</RelativeLayout>
