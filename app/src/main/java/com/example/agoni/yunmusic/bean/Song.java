@@ -1,9 +1,11 @@
 package com.example.agoni.yunmusic.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Agoni on 2016/10/12.
  */
-public class Song {
+public class Song implements Serializable{
     /**
      show_link	:	http://zhangmenshiting.baidu.com/data2/music/dcf2092999093c0d0460470e770d4783/256405659/256405659.mp3?xcode=82fbc04e500e6c0c2bb21879f3eb947d
      down_type	:	0

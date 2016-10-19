@@ -2,6 +2,7 @@ package com.example.agoni.yunmusic;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.os.Message;
@@ -15,7 +16,11 @@ import com.example.agoni.yunmusic.activity.MainActivity;
 import com.example.agoni.yunmusic.bean.Song;
 import com.example.agoni.yunmusic.bean.SongInfoDetail;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -75,7 +80,62 @@ public class MusicService extends Service {
             Log.i("tag", "restart");
             mediaPlayer.start();
         }
+
+        @Override
+        public void saveState() throws RemoteException {
+            savePlayList();//保存播放列表
+            savePlayInfo();//保存播放信息
+            mediaPlayer.release();
+        }
     };
+
+    private void savePlayInfo() {
+        SharedPreferences sp=getSharedPreferences("config",MODE_PRIVATE);
+        SharedPreferences.Editor edit = sp.edit();
+        String curSongid = myapp.getCurSongid();
+        if (curSongid!=null){
+            edit.putString("curSongid",curSongid);
+            if (mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+            }
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            Log.i("tag","currentPosition="+currentPosition);
+            edit.putInt("currentPosition",currentPosition);
+        }
+        edit.apply();
+    }
+
+    private void savePlayList() {
+        List<SongInfoDetail> playList = myapp.getPlayList();
+        if (playList!=null){
+            File file1=new File(getCacheDir(),"playList.dat");
+            writeObjToFile(playList,file1);//写入歌单
+        }
+        HashMap<String, Integer> indexOfList = myapp.getIndexOfList();
+        if (indexOfList!=null){
+            File file2=new File(getCacheDir(),"indexOfList.dat");//写入索引
+            writeObjToFile(indexOfList,file2);
+        }
+    }
+
+    private void writeObjToFile(Object obj,File file) {
+        if (!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileOutputStream out=new FileOutputStream(file);
+            ObjectOutputStream objout=new ObjectOutputStream(out);
+            objout.writeObject(obj);
+            objout.flush();
+            objout.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void initSong(SongInfoDetail songInfoDetail) {
         List<Song> songs = songInfoDetail.getSongs();
@@ -118,7 +178,9 @@ public class MusicService extends Service {
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
+                    mediaPlayer.seekTo(myapp.getCurrentPosition());
                     mediaPlayer.start();
+                    myapp.setCurrentPosition(0);
                 }
             });
         } catch (IOException e) {
@@ -128,7 +190,7 @@ public class MusicService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i("tag", "onCreate");
+        Log.i("tag", "seronCreate");
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -148,27 +210,5 @@ public class MusicService extends Service {
         }
         SongInfoDetail songInfoDetail = myapp.getPlayList().get(curindex);
         initSong(songInfoDetail);
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("tag", "onStartCommand");
-
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i("tag", "onDestroy");
-        mediaPlayer.release();
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.i("tag", "onUnbind");
-        return super.onUnbind(intent);
-
     }
 }

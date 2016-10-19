@@ -10,4 +10,5 @@ interface AidlIterface {
     void previous();
     void pause();
     void restart();
+    void saveState();
 }

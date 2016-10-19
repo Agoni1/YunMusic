@@ -3,6 +3,7 @@ package com.example.agoni.yunmusic.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +31,13 @@ import com.example.agoni.yunmusic.fragment.DrawerContentFragment;
 import com.example.agoni.yunmusic.fragment.MainContentFragment;
 import com.example.agoni.yunmusic.util.StaticValue;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends FragmentActivity {
     private boolean isPlaying = false;
@@ -59,10 +68,18 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Myapp myapp= (Myapp) getApplication();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();//初始化侧边栏和主布局
         findView();
+        initPlayList();
+        if (myapp.getCurSongid()!=null){
+            initPlaybarUI(myapp.getPlayList().get(myapp.getIndex(myapp.getCurSongid())));
+            playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
+            isPause=false;
+            isPlaying=false;
+        }
         initplaybarlistener();
 
         handler = new Handler() {
@@ -77,6 +94,54 @@ public class MainActivity extends FragmentActivity {
         };
     }
 
+    private void initPlayList() {
+        Myapp myapp= (Myapp) getApplication();
+        List<SongInfoDetail> playList = readPlayList();
+        HashMap<String, Integer> indexOfList = readIndexOfList();
+        SharedPreferences sp =getSharedPreferences("config",MODE_PRIVATE);
+        String curSongid = sp.getString("curSongid", null);
+        int currentPosition = sp.getInt("currentPosition", 0);
+        if (playList!=null&&indexOfList!=null&&curSongid!=null){
+            myapp.setPlayList(playList);
+            myapp.setIndexOfList(indexOfList);
+            myapp.setCurSongid(curSongid);
+            myapp.setCurrentPosition(currentPosition);
+        }
+    }
+
+    private HashMap<String, Integer> readIndexOfList() {
+        File file=new File(getCacheDir(),"indexOfList.dat");
+        HashMap<String, Integer> indexOfList = (HashMap<String, Integer>) readObjectFromFile(file);
+        return indexOfList;
+    }
+
+    private List<SongInfoDetail> readPlayList() {
+        File file=new File(getCacheDir(),"playList.dat");
+        List<SongInfoDetail> playList = (List<SongInfoDetail>) readObjectFromFile(file);
+        return playList;
+    }
+
+    public Object readObjectFromFile(File file)
+    {
+        Object temp=null;
+        if (file.exists()){
+            FileInputStream in;
+            try {
+                in = new FileInputStream(file);
+                ObjectInputStream objIn=new ObjectInputStream(in);
+                temp=objIn.readObject();
+                objIn.close();
+                return temp;
+            } catch (IOException e) {
+                Log.i("tag","read object failed");
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     private void findView() {
         playbar_music_image = (ImageView) findViewById(R.id.playbar_music_image);
         playbar_music_title = (TextView) findViewById(R.id.playbar_music_title);
@@ -87,9 +152,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initPlaybarUI(SongInfoDetail songInfoDetail) {
-        Picasso.with(this).load(songInfoDetail.getPic_small())
-                .placeholder(R.drawable.a8c)
-                .error(R.drawable.a8c).into(playbar_music_image);
+        if (!TextUtils.isEmpty(songInfoDetail.getPic_small())){
+            Picasso.with(this).load(songInfoDetail.getPic_small())
+                    .placeholder(R.drawable.a8c)
+                    .error(R.drawable.a8c).into(playbar_music_image);
+        }else {
+            playbar_music_image.setImageResource(R.drawable.a8c);
+        }
         playbar_music_title.setText(songInfoDetail.getTitle());
         playbar_music_author.setText(songInfoDetail.getAuthor());
         isPlaying = true;
@@ -198,12 +267,13 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
+        try {
+            aidlIterface.saveState();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         unbindService(conn);//解绑服务
-        savePlayList();
-    }
-
-    private void savePlayList() {
-
     }
 
     @Override

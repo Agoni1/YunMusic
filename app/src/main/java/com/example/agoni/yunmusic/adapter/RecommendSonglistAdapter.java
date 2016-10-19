@@ -53,8 +53,9 @@ public class RecommendSonglistAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Picasso.with(context).load(recommendSonglist.get(position).getPic()).
-                placeholder(R.drawable.a8c)
+        Picasso.with(context).load(recommendSonglist.get(position).getPic())
+                .resize(150,150)
+                .placeholder(R.drawable.a8c)
                 .error(R.drawable.a8c)
                 .into(viewHolder.img);
         viewHolder.title.setText(recommendSonglist.get(position).getTitle());

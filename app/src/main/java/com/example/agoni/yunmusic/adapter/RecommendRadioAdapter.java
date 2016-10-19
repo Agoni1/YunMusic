@@ -54,6 +54,7 @@ public class RecommendRadioAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         Picasso.with(context).load(recommendRadioList.get(position).getPic())
+                .resize(150,150)
                 .placeholder(R.drawable.a8c)
                 .error(R.drawable.a8c)
                 .into(viewHolder.img);

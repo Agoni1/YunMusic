@@ -1,12 +1,13 @@
 package com.example.agoni.yunmusic.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Agoni on 2016/10/12.
  */
-public class SongInfoDetail {
+public class SongInfoDetail implements Serializable {
     /**
      * distribution	:	0000000000,0000000000,0000000000,0000000000,0000000000,0000000000,0000000000,1111111111,1111111111,0000000000
      * relate_status	:	0

@@ -12,14 +12,24 @@ import java.util.List;
  * Created by Agoni on 2016/10/15.
  */
 public class Myapp extends Application {
-    private String curSongid=null;//记录当前播放的song_id
-    private List<SongInfoDetail> playList=new ArrayList<>();//播放列表
-    private HashMap<String,Integer> indexOfList=new HashMap<String,Integer>();//每首歌在列表中的索引
+    private String curSongid = null;//记录当前播放的song_id
+    private List<SongInfoDetail> playList = new ArrayList<>();//播放列表
+    private HashMap<String, Integer> indexOfList = new HashMap<String, Integer>();//每首歌在列表中的索引
+    private int currentPosition=0;
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+    }
 
     public List<SongInfoDetail> getPlayList() {
         return playList;
     }
-    public void addToPlayList(SongInfoDetail songInfoDetail){
+
+    public void addToPlayList(SongInfoDetail songInfoDetail) {
         playList.add(songInfoDetail);
     }
 
@@ -27,15 +37,19 @@ public class Myapp extends Application {
         this.playList = playList;
     }
 
+    public void setIndexOfList(HashMap<String, Integer> indexOfList) {
+        this.indexOfList = indexOfList;
+    }
+
     public HashMap<String, Integer> getIndexOfList() {
         return indexOfList;
     }
 
-    public void addIndex(String songid, int index){
-        indexOfList.put(songid,index);
+    public void addIndex(String songid, int index) {
+        indexOfList.put(songid, index);
     }
 
-    public int getIndex(String songid){
+    public int getIndex(String songid) {
         return indexOfList.get(songid);
     }
 

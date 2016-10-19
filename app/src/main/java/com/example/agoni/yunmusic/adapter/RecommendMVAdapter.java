@@ -52,6 +52,7 @@ public class RecommendMVAdapter extends BaseAdapter {
             viewHolder= (ViewHolder) convertView.getTag();
         }
         Picasso.with(context).load(recommendMVList.get(position).getPic())
+                .resize(150,150)
                 .placeholder(R.drawable.a8c)
                 .error(R.drawable.a8c)
                 .into(viewHolder.img);
