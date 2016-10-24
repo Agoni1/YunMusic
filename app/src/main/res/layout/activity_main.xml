@@ -29,6 +29,7 @@
                 android:id="@+id/playbar_music_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/musicimage" />
 
             <TextView

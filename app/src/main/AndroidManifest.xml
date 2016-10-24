@@ -25,7 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.TestActivity" />
-        <service android:name=".MusicService"/>
+
+        <service android:name=".MusicService" />
+
+        <activity android:name=".PlayingShow"></activity>
     </application>
 
 </manifest>

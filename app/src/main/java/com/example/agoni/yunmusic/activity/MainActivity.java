@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.example.agoni.yunmusic.AidlIterface;
 import com.example.agoni.yunmusic.MusicService;
 import com.example.agoni.yunmusic.Myapp;
+import com.example.agoni.yunmusic.PlayingShow;
 import com.example.agoni.yunmusic.R;
 import com.example.agoni.yunmusic.adapter.PlayListAdapter;
 import com.example.agoni.yunmusic.bean.SongInfoDetail;
@@ -55,6 +56,7 @@ public class MainActivity extends FragmentActivity {
     private Fragment mainContentFragment;
     private Fragment drawerContentFragment;
 
+    private View playbar;
     private ImageView playbar_music_image;
     private TextView playbar_music_author;
     private TextView playbar_music_title;
@@ -152,6 +154,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void findView() {
+        playbar=findViewById(R.id.playbar);
         playbar_music_image = (ImageView) findViewById(R.id.playbar_music_image);
         playbar_music_title = (TextView) findViewById(R.id.playbar_music_title);
         playbar_music_author = (TextView) findViewById(R.id.playbar_music_author);
@@ -164,6 +167,7 @@ public class MainActivity extends FragmentActivity {
         if (!TextUtils.isEmpty(songInfoDetail.getPic_small())){
             Picasso.with(this).load(songInfoDetail.getPic_small())
                     .placeholder(R.drawable.a8c)
+                    .resize(150,150)
                     .error(R.drawable.a8c).into(playbar_music_image);
         }else {
             playbar_music_image.setImageResource(R.drawable.a8c);
@@ -233,6 +237,17 @@ public class MainActivity extends FragmentActivity {
                     showPlayList(playList);
                 }else {
                     Toast.makeText(getApplicationContext(),"播放列表为空",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        playbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Myapp myapp= (Myapp) getApplication();
+                if (myapp.getCurSongid()!=null){
+                    startActivity(new Intent(getApplicationContext(),PlayingShow.class));
+                }else {
+                    Toast.makeText(getApplicationContext(),"当前没有歌曲在播放",Toast.LENGTH_SHORT).show();
                 }
             }
         });
