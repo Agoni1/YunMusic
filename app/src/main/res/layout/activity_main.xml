@@ -33,6 +33,8 @@
                 android:src="@drawable/musicimage" />
 
             <TextView
+                android:maxLines="1"
+                android:singleLine="true"
                 android:id="@+id/playbar_music_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,6 +46,8 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:maxLines="1"
+                android:singleLine="true"
                 android:id="@+id/playbar_music_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:test="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="120dp">
+
+    <ImageView
+        android:id="@+id/ranking_layout_listview_item_img"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/a8c" />
+
+    <TextView
+        android:id="@+id/ranking_layout_listview_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_img"
+        android:textColor="@color/textDefault"
+        android:textSize="16sp"
+        test:text="新歌榜" />
+
+    <TextView
+        android:id="@+id/ranking_layout_listview_item_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ranking_layout_listview_item_title"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_img"
+        android:text="1"
+        android:textColor="#ff0000"
+        android:textSize="12sp" />
+
+    <TextView
+        android:maxLines="1"
+        android:singleLine="true"
+        android:id="@+id/ranking_layout_listview_item_nameandauthor1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/ranking_layout_listview_item_one"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_one"
+        test:text="歌名-作者"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/ranking_layout_listview_item_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ranking_layout_listview_item_one"
+        android:layout_marginTop="7dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_img"
+        android:text="2"
+        android:textColor="#fd4c00"
+        android:textSize="12sp" />
+
+    <TextView
+        android:maxLines="1"
+        android:singleLine="true"
+        android:id="@+id/ranking_layout_listview_item_nameandauthor2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/ranking_layout_listview_item_two"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_two"
+        test:text="歌名-作者"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/ranking_layout_listview_item_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ranking_layout_listview_item_two"
+        android:layout_marginTop="7dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_img"
+        android:text="3"
+        android:textColor="#dcc600"
+        android:textSize="12sp" />
+
+    <TextView
+        android:maxLines="1"
+        android:singleLine="true"
+        android:id="@+id/ranking_layout_listview_item_nameandauthor3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/ranking_layout_listview_item_three"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/ranking_layout_listview_item_three"
+        test:text="歌名-作者"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_marginLeft="120dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/line_grey"
+        android:layout_width="match_parent"
+        android:layout_height="1px" />
+</RelativeLayout>

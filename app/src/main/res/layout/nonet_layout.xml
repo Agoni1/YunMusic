@@ -5,11 +5,15 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/nonet_layout_retry"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="100dp"
+        android:paddingBottom="350dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
+        android:gravity="center_horizontal"
         android:text="请连接网络后点击屏幕重试"
-        android:textColor="@color/textDefault"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/textDefault" />
 
 </LinearLayout>
