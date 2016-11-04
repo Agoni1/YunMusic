@@ -1,8 +1,10 @@
 package com.example.agoni.yunmusic;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.os.Message;
@@ -23,12 +25,16 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
+
 /**
  * Created by Agoni on 2016/10/15.
  */
-public class MusicService extends Service {
+public class MusicService extends Service implements AudioManager.OnAudioFocusChangeListener {
     private Myapp myapp;
+    private AudioManager am;
     private MediaPlayer mediaPlayer;
+    private Context mContext;
 
     @Nullable
     @Override
@@ -41,12 +47,19 @@ public class MusicService extends Service {
         public void play() throws RemoteException {
             String curSongid = myapp.getCurSongid();
             if (curSongid != null) {
-                int index = myapp.getIndex(curSongid);
-                Log.i("tag", "curSongid=" + curSongid);
-                Log.i("tag", myapp.getPlayList().size() + "");
-                Log.i("tag", index + "");
-                SongInfoDetail songInfoDetail = myapp.getPlayList().get(index);
-                initSong(songInfoDetail);
+                // Request audio focus for playback
+                am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                int result = am.requestAudioFocus((AudioManager.OnAudioFocusChangeListener) mContext, AudioManager.STREAM_MUSIC,
+                        AudioManager.AUDIOFOCUS_GAIN);
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    // 开始播放音乐文件
+                    int index = myapp.getIndex(curSongid);
+                    Log.i("tag", "curSongid=" + curSongid);
+                    Log.i("tag", myapp.getPlayList().size() + "");
+                    Log.i("tag", index + "");
+                    SongInfoDetail songInfoDetail = myapp.getPlayList().get(index);
+                    initSong(songInfoDetail);
+                }
             } else {
                 MainActivity.handler.post(new Runnable() {
                     @Override
@@ -60,7 +73,12 @@ public class MusicService extends Service {
         @Override
         public void next() throws RemoteException {
             Log.i("tag", "next");
-            playNext();
+            am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            int result = am.requestAudioFocus((AudioManager.OnAudioFocusChangeListener) mContext, AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN);
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                playNext();
+            }
 
         }
 
@@ -78,7 +96,12 @@ public class MusicService extends Service {
         @Override
         public void restart() throws RemoteException {
             Log.i("tag", "restart");
-            mediaPlayer.start();
+            am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            int result = am.requestAudioFocus((AudioManager.OnAudioFocusChangeListener) mContext, AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN);
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                mediaPlayer.start();
+            }
         }
 
         @Override
@@ -90,36 +113,36 @@ public class MusicService extends Service {
     };
 
     private void savePlayInfo() {
-        SharedPreferences sp=getSharedPreferences("config",MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         String curSongid = myapp.getCurSongid();
-        if (curSongid!=null){
-            edit.putString("curSongid",curSongid);
-            if (mediaPlayer.isPlaying()){
+        if (curSongid != null) {
+            edit.putString("curSongid", curSongid);
+            if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
             }
             int currentPosition = mediaPlayer.getCurrentPosition();
-            Log.i("tag","currentPosition="+currentPosition);
-            edit.putInt("currentPosition",currentPosition);
+            Log.i("tag", "currentPosition=" + currentPosition);
+            edit.putInt("currentPosition", currentPosition);
         }
         edit.apply();
     }
 
     private void savePlayList() {
         List<SongInfoDetail> playList = myapp.getPlayList();
-        if (playList!=null){
-            File file1=new File(getCacheDir(),"playList.dat");
-            writeObjToFile(playList,file1);//写入歌单
+        if (playList != null) {
+            File file1 = new File(getCacheDir(), "playList.dat");
+            writeObjToFile(playList, file1);//写入歌单
         }
         HashMap<String, Integer> indexOfList = myapp.getIndexOfList();
-        if (indexOfList!=null){
-            File file2=new File(getCacheDir(),"indexOfList.dat");//写入索引
-            writeObjToFile(indexOfList,file2);
+        if (indexOfList != null) {
+            File file2 = new File(getCacheDir(), "indexOfList.dat");//写入索引
+            writeObjToFile(indexOfList, file2);
         }
     }
 
-    private void writeObjToFile(Object obj,File file) {
-        if (!file.exists()){
+    private void writeObjToFile(Object obj, File file) {
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -127,8 +150,8 @@ public class MusicService extends Service {
             }
         }
         try {
-            FileOutputStream out=new FileOutputStream(file);
-            ObjectOutputStream objout=new ObjectOutputStream(out);
+            FileOutputStream out = new FileOutputStream(file);
+            ObjectOutputStream objout = new ObjectOutputStream(out);
             objout.writeObject(obj);
             objout.flush();
             objout.close();
@@ -191,6 +214,8 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         Log.i("tag", "seronCreate");
+        mContext = this;
+        am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -210,5 +235,48 @@ public class MusicService extends Service {
         }
         SongInfoDetail songInfoDetail = myapp.getPlayList().get(curindex);
         initSong(songInfoDetail);
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT) {
+            if (mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+                Message msg = Message.obtain();
+                msg.what = 200;//播放歌曲，通知主线程更新ui
+                MainActivity.handler.sendMessage(msg);
+
+                Log.i("tag","AUDIOFOCUS_LOSS_TRANSIENT");
+            }
+        }
+        else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+            // Resume playback
+            if (!mediaPlayer.isPlaying()){
+                mediaPlayer.start();
+                Message msg = Message.obtain();
+                msg.what = 300;//继续播放歌曲，通知主线程更新ui
+                MainActivity.handler.sendMessage(msg);
+
+                Log.i("tag","AUDIOFOCUS_LOSS_TRANSIENT");
+                Log.i("tag","AUDIOFOCUS_GAIN");
+
+            }
+        }
+        else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            am.abandonAudioFocus((AudioManager.OnAudioFocusChangeListener) mContext);
+            // Stop playback
+            mediaPlayer.pause();
+            Message msg = Message.obtain();
+            msg.what = 200;//播放歌曲，通知主线程更新ui
+            MainActivity.handler.sendMessage(msg);
+            Log.i("tag","AUDIOFOCUS_LOSS");
+
+        }
+        else if (focusChange==AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK){
+            if (mediaPlayer.isPlaying()){
+                mediaPlayer.setVolume(0.1f, 0.1f);
+                Log.i("tag","AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+            }
+        }
     }
 }

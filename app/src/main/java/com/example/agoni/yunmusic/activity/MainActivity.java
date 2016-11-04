@@ -98,8 +98,21 @@ public class MainActivity extends FragmentActivity {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 100) {
+                    //在播放音乐，改变控制条UI
                     SongInfoDetail songInfoDetail = (SongInfoDetail) msg.obj;
                     initPlaybarUI(songInfoDetail);
+                }
+                if (msg.what == 200){
+                    //暂停音乐，改变控制条UI
+                    playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
+                    isPlaying = false;
+                    isPause = true;
+                }
+                if (msg.what==300){
+                    //继续播放音乐，改变控制条UI
+                    playbar_btn_play.setImageResource(R.drawable.playbar_btn_pause);
+                    isPlaying = true;
+                    isPause = false;
                 }
             }
         };

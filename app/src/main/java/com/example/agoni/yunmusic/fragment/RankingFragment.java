@@ -3,10 +3,14 @@ package com.example.agoni.yunmusic.fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,6 +30,7 @@ import com.yolanda.nohttp.rest.OnResponseListener;
 import com.yolanda.nohttp.rest.Request;
 import com.yolanda.nohttp.rest.RequestQueue;
 import com.yolanda.nohttp.rest.Response;
+import com.yolanda.nohttp.tools.NetUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,10 +180,36 @@ public class RankingFragment extends BaseFragment {
         }
     };
 
+    //配置listview
     private void initListView(List<RunkingInfo> runkingInfoList) {
+        final FragmentManager manager = getActivity().getSupportFragmentManager();
+
         ListView listView = (ListView) netView.findViewById(R.id.ranking_layout_listview);
         listView.setAdapter(new RunkingInfoAdapter(getContext(), runkingInfoList));
         listView.addFooterView(View.inflate(getContext(), R.layout.songlist_bottom_space, null));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (NetUtil.isWifiConnected()){
+                    //展示详细榜单
+                    Fragment mainContentFragment = manager.findFragmentByTag("mainContentFragment");
+                    RankingDetailFragment rankingDetailFragment = new RankingDetailFragment();
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.add(R.id.mainContentFramLayout,rankingDetailFragment,"rankingDetailFragment");
+                    transaction.hide(mainContentFragment);
+                    transaction.show(rankingDetailFragment);
+                    transaction.commit();
+
+
+                }else if(NetUtil.isMobileConnected()){
+                    //提醒是否使用流量
+
+                }else {
+
+                }
+            }
+        });
     }
 
 }
