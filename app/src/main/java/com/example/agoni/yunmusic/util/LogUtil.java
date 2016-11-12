@@ -7,9 +7,18 @@ import android.util.Log;
  */
 public class LogUtil {
     private static boolean isopen=true;
-     public static void i(String tag,String text){
+    private static String TAG="tag";
+    public static void setTag(String tag){
+        LogUtil.TAG =tag;
+    }
+     public static void i(String text){
          if (isopen){
-             Log.i(tag,text);
+             Log.i(TAG,text);
          }
      }
+    public static void i(String tag,String text){
+        if (isopen){
+            Log.i(tag,text);
+        }
+    }
 }

@@ -1,7 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:test="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <com.example.agoni.yunmusic.view.MyScrollView
+        android:id="@+id/rankingdetail_layout_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <ImageView
+                    android:id="@+id/rankingdetail_layout_bgimg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/rankingdetail_layout_bgimg_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/songlist_detail_headview_bg"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/rankingdetail_layout_image"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="70dp"
+                    android:background="@drawable/a8c"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/rankingdetail_layout_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/rankingdetail_layout_image"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@id/rankingdetail_layout_image"
+                    android:gravity="center"
+                    android:textColor="@color/white_text"
+                    android:textSize="14sp"
+                    test:text="更新时间:" />
+
+                <TextView
+                    android:id="@+id/rankingdetail_layout_rankingname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="流行榜"
+                    android:textColor="@color/white_text"
+                    android:textSize="20sp"
+                    android:layout_above="@+id/rankingdetail_layout_time"
+                    android:layout_alignLeft="@+id/rankingdetail_layout_time"
+                    android:layout_alignStart="@+id/rankingdetail_layout_time"
+                    android:layout_marginBottom="30dp" />
+
+
+            </RelativeLayout>
+
+            <com.example.agoni.yunmusic.view.MyListView
+                android:id="@+id/rankingdetail_layout_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:focusableInTouchMode="true"></com.example.agoni.yunmusic.view.MyListView>
+
+        </LinearLayout>
+
+
+    </com.example.agoni.yunmusic.view.MyScrollView>
+
+    <!--标题栏-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+
+        <ImageView
+            android:id="@+id/rankingdetail_layout_headview"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:alpha="0"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:id="@+id/rankingdetail_layout_headview_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@color/songlist_detail_headview_bg"
+            android:scaleType="fitXY"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/rankingdetail_layout_img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="15dp"
+            android:src="@drawable/back" />
+
+        <ImageButton
+            android:id="@+id/rankingdetail_layout_menu_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/menu_more" />
+
+        <ImageButton
+            android:id="@+id/rankingdetail_layout_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/rankingdetail_layout_menu_more"
+            android:background="@null"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/search" />
+
+        <TextView
+            android:alpha="0"
+            android:id="@+id/rankingdetail_layout_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/rankingdetail_layout_img_back"
+            android:gravity="center_vertical"
+            test:text="榜单"
+            android:textColor="@color/white_text"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

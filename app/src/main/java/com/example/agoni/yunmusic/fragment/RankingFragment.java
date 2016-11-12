@@ -106,15 +106,6 @@ public class RankingFragment extends BaseFragment {
         requestQueue.add(0, request, listener);
     }
 
-    ;
-
-    private void requestData() {
-
-        String billSongListurl = BMA.Billboard.billSongList(1, 0, 100);
-        Log.i("tag", billSongListurl);
-
-    }
-
     OnResponseListener listener = new OnResponseListener() {
 
         @Override
@@ -195,6 +186,7 @@ public class RankingFragment extends BaseFragment {
                     //展示详细榜单
                     Fragment mainContentFragment = manager.findFragmentByTag("mainContentFragment");
                     RankingDetailFragment rankingDetailFragment = new RankingDetailFragment();
+                    rankingDetailFragment.setRankingInfo((RunkingInfo)parent.getItemAtPosition(position));
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.add(R.id.mainContentFramLayout,rankingDetailFragment,"rankingDetailFragment");
                     transaction.hide(mainContentFragment);

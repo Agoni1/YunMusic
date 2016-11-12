@@ -299,39 +299,39 @@ public class RecommendSonlistDetailFragment extends Fragment {
             public void run() {
                 String songinfojson = NetUitl.requestbyOkhttp(songurl);
                 Log.i("tag", "songinfojson是：" + songinfojson);
-                jiexsonginfo(songinfojson);
+                jiexsonginfo(songinfojson);Gson gson = new Gson();
+                try {
+                    JSONObject object = new JSONObject(songinfojson);
+                    String songinfo = object.getString("songinfo");
+                    SongInfoDetail songInfoDetail = gson.fromJson(songinfo, SongInfoDetail.class);
+                    JSONObject songurl = object.getJSONObject("songurl");
+                    JSONArray songArray = songurl.getJSONArray("url");
+                    for (int i = 0; i < songArray.length(); i++) {
+                        Song song = gson.fromJson(songArray.getString(i), Song.class);
+                        songInfoDetail.setSongs(song);
+                    }
+                    //将当前歌曲添加到播放列表中，并设置当前songid
+                    Myapp myapp = (Myapp) (getActivity().getApplication());
+                    boolean hadAdd = hadAddtoPlayList(songInfoDetail);
+                    if (!hadAdd) {
+                        int size = myapp.getPlayList().size();
+                        myapp.addToPlayList(songInfoDetail);//添加到列表中
+                        myapp.addIndex(songInfoDetail.getSong_id(),size);
+                    }
+                    myapp.setCurSongid(songInfoDetail.getSong_id());//设置当前songid
+                    playsong();
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
 
     //解析歌曲json
     private void jiexsonginfo(String songinfojson) {
-        Gson gson = new Gson();
-        try {
-            JSONObject object = new JSONObject(songinfojson);
-            String songinfo = object.getString("songinfo");
-            SongInfoDetail songInfoDetail = gson.fromJson(songinfo, SongInfoDetail.class);
-            JSONObject songurl = object.getJSONObject("songurl");
-            JSONArray songArray = songurl.getJSONArray("url");
-            for (int i = 0; i < songArray.length(); i++) {
-                Song song = gson.fromJson(songArray.getString(i), Song.class);
-                songInfoDetail.setSongs(song);
-            }
-            //将当前歌曲添加到播放列表中，并设置当前songid
-            Myapp myapp = (Myapp) (getActivity().getApplication());
-            boolean hadAdd = hadAddtoPlayList(songInfoDetail);
-            if (!hadAdd) {
-                int size = myapp.getPlayList().size();
-                myapp.addToPlayList(songInfoDetail);//添加到列表中
-                myapp.addIndex(songInfoDetail.getSong_id(),size);
-            }
-            myapp.setCurSongid(songInfoDetail.getSong_id());//设置当前songid
-            playsong();
 
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
     }
 

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -82,6 +83,10 @@ public class MainActivity extends FragmentActivity {
         Myapp myapp= (Myapp) getApplication();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //在5.0以上版本改变状态栏颜色
+        if (Build.VERSION.SDK_INT>=21){
+            getWindow().setStatusBarColor(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
         initView();//初始化侧边栏和主布局
         findView();
         initPlayList();
