@@ -1,7 +1,10 @@
 package com.example.agoni.yunmusic.activity;
 
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -15,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,9 +55,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity {
-    private boolean isPlaying = false;
-    private boolean isPause = false;
+    public static boolean isPlaying = false;
+    public static boolean isPause = false;
     public static Handler handler;
+    public static Context context;
     private Fragment mainContentFragment;
     private Fragment drawerContentFragment;
 
@@ -80,21 +85,22 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Myapp myapp= (Myapp) getApplication();
+        Myapp myapp = (Myapp) getApplication();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
         //在5.0以上版本改变状态栏颜色
-        if (Build.VERSION.SDK_INT>=21){
+        if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         initView();//初始化侧边栏和主布局
         findView();
         initPlayList();
-        if (myapp.getCurSongid()!=null){
+        if (myapp.getCurSongid() != null) {
             initPlaybarUI(myapp.getPlayList().get(myapp.getIndex(myapp.getCurSongid())));
             playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
-            isPause=false;
-            isPlaying=false;
+            isPause = false;
+            isPlaying = false;
         }
         initplaybarlistener();
 
@@ -107,13 +113,13 @@ public class MainActivity extends FragmentActivity {
                     SongInfoDetail songInfoDetail = (SongInfoDetail) msg.obj;
                     initPlaybarUI(songInfoDetail);
                 }
-                if (msg.what == 200){
+                if (msg.what == 200) {
                     //暂停音乐，改变控制条UI
                     playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
                     isPlaying = false;
                     isPause = true;
                 }
-                if (msg.what==300){
+                if (msg.what == 300) {
                     //继续播放音乐，改变控制条UI
                     playbar_btn_play.setImageResource(R.drawable.playbar_btn_pause);
                     isPlaying = true;
@@ -124,13 +130,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initPlayList() {
-        Myapp myapp= (Myapp) getApplication();
+        Myapp myapp = (Myapp) getApplication();
         List<SongInfoDetail> playList = readPlayList();
         HashMap<String, Integer> indexOfList = readIndexOfList();
-        SharedPreferences sp =getSharedPreferences("config",MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
         String curSongid = sp.getString("curSongid", null);
         int currentPosition = sp.getInt("currentPosition", 0);
-        if (playList!=null&&indexOfList!=null&&curSongid!=null){
+        if (playList != null && indexOfList != null && curSongid != null) {
             myapp.setPlayList(playList);
             myapp.setIndexOfList(indexOfList);
             myapp.setCurSongid(curSongid);
@@ -139,30 +145,29 @@ public class MainActivity extends FragmentActivity {
     }
 
     private HashMap<String, Integer> readIndexOfList() {
-        File file=new File(getCacheDir(),"indexOfList.dat");
+        File file = new File(getCacheDir(), "indexOfList.dat");
         HashMap<String, Integer> indexOfList = (HashMap<String, Integer>) readObjectFromFile(file);
         return indexOfList;
     }
 
     private List<SongInfoDetail> readPlayList() {
-        File file=new File(getCacheDir(),"playList.dat");
+        File file = new File(getCacheDir(), "playList.dat");
         List<SongInfoDetail> playList = (List<SongInfoDetail>) readObjectFromFile(file);
         return playList;
     }
 
-    public Object readObjectFromFile(File file)
-    {
-        Object temp=null;
-        if (file.exists()){
+    public Object readObjectFromFile(File file) {
+        Object temp = null;
+        if (file.exists()) {
             FileInputStream in;
             try {
                 in = new FileInputStream(file);
-                ObjectInputStream objIn=new ObjectInputStream(in);
-                temp=objIn.readObject();
+                ObjectInputStream objIn = new ObjectInputStream(in);
+                temp = objIn.readObject();
                 objIn.close();
                 return temp;
             } catch (IOException e) {
-                Log.i("tag","read object failed");
+                Log.i("tag", "read object failed");
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -172,7 +177,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void findView() {
-        playbar=findViewById(R.id.playbar);
+        playbar = findViewById(R.id.playbar);
         playbar_music_image = (ImageView) findViewById(R.id.playbar_music_image);
         playbar_music_title = (TextView) findViewById(R.id.playbar_music_title);
         playbar_music_author = (TextView) findViewById(R.id.playbar_music_author);
@@ -182,12 +187,12 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void initPlaybarUI(SongInfoDetail songInfoDetail) {
-        if (!TextUtils.isEmpty(songInfoDetail.getPic_small())){
+        if (!TextUtils.isEmpty(songInfoDetail.getPic_small())) {
             Picasso.with(this).load(songInfoDetail.getPic_small())
                     .placeholder(R.drawable.a8c)
-                    .resize(150,150)
+                    .resize(150, 150)
                     .error(R.drawable.a8c).into(playbar_music_image);
-        }else {
+        } else {
             playbar_music_image.setImageResource(R.drawable.a8c);
         }
         playbar_music_title.setText(songInfoDetail.getTitle());
@@ -231,17 +236,17 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 Myapp myapp = (Myapp) getApplication();
-                if (myapp.getCurSongid() != null){
-                    if (myapp.getPlayList().size()<=1){
+                if (myapp.getCurSongid() != null) {
+                    if (myapp.getPlayList().size() <= 1) {
                         Toast.makeText(getApplicationContext(), "没有更多歌曲", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         try {
                             aidlIterface.next();
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
                     }
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "播放列表为空", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -249,44 +254,57 @@ public class MainActivity extends FragmentActivity {
         playbar_btn_playlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Myapp myapp= (Myapp) getApplication();
+                Myapp myapp = (Myapp) getApplication();
                 List<SongInfoDetail> playList = myapp.getPlayList();
-                if (playList!=null){
+                if (playList != null) {
                     showPlayList(playList);
-                }else {
-                    Toast.makeText(getApplicationContext(),"播放列表为空",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "播放列表为空", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         playbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Myapp myapp= (Myapp) getApplication();
-                if (myapp.getCurSongid()!=null){
-                    startActivity(new Intent(getApplicationContext(),PlayingShow.class));
-                }else {
-                    Toast.makeText(getApplicationContext(),"当前没有歌曲在播放",Toast.LENGTH_SHORT).show();
+                Myapp myapp = (Myapp) getApplication();
+                if (myapp.getCurSongid() != null) {
+                    startActivity(new Intent(getApplicationContext(), PlayingShow.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "当前没有歌曲在播放", Toast.LENGTH_SHORT).show();
                 }
+                sendNotification();
             }
         });
 
     }
 
+    private void sendNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.icon)
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle("歌曲")
+                .setContentText("内容");
+        Notification notification = builder.build();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(1, notification);
+
+    }
+
     private void showPlayList(List<SongInfoDetail> playList) {
         View view = LayoutInflater.from(this).inflate(R.layout.playlist, null);
-        ListView listView= (ListView) view.findViewById(R.id.playlist_listview);
-        listView.setAdapter(new PlayListAdapter(getApplicationContext(),playList));
-        Dialog dialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+        ListView listView = (ListView) view.findViewById(R.id.playlist_listview);
+        listView.setAdapter(new PlayListAdapter(getApplicationContext(), playList));
+        Dialog dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
         //填充对话框的布局
         //将布局设置给Dialog
         dialog.setContentView(view);
         //获取当前Activity所在的窗体
         Window dialogWindow = dialog.getWindow();
         //设置Dialog从窗体底部弹出
-        dialogWindow.setGravity( Gravity.BOTTOM);
+        dialogWindow.setGravity(Gravity.BOTTOM);
         //获得窗体的属性
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.width= ScreenUtils.getScreenWidth(getApplicationContext());
+        lp.width = ScreenUtils.getScreenWidth(getApplicationContext());
         lp.height = DensityUtil.dip2px(getApplicationContext(), 390);
 
 //       将属性设置给窗体
@@ -365,6 +383,16 @@ public class MainActivity extends FragmentActivity {
             aidlIterface.play();
         } catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updatePlayUi() {
+        if (isPlaying) {
+            playbar_btn_play.setImageResource(R.drawable.playbar_btn_pause);
+        } else if (isPause){
+            playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
+        }else {
+            playbar_btn_play.setImageResource(R.drawable.playbar_btn_play);
         }
     }
 }

@@ -11,11 +11,14 @@
     <application
         android:name=".Myapp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/yunmusic_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--singleInstance使此activity全局只有一个-->
         <activity
+            android:launchMode="singleInstance"
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
